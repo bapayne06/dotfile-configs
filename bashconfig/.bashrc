@@ -7,7 +7,7 @@ export TERM=xterm-256color
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
+    *i*) ;;                               
       *) return;;
 esac
 
@@ -19,8 +19,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=15000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -46,7 +46,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -59,12 +59,15 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)';
+    PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;231;1m\][\[\e[38;5;220m\]\A\[\e[97m\]]\[\e[0m\] \[\e[38;5;196;1m\]${PS1_CMD1}\n\[\e[38;5;118m\]\u@\h:\[\e[0m\] \[\e[38;5;40;1m\]\w\[\e[0m\] \[\e[38;5;40m$\[\e[0m\] '
+
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\t\n\u@\h:\w\$ '
 fi
-unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -75,37 +78,15 @@ xterm*|rxvt*)
     ;;
 esac
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f "$HOME/.bash_aliases" ]; then
+    . "$HOME/.bash_aliases"
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -119,20 +100,15 @@ if ! shopt -oq posix; then
   fi
 fi
 
-echo "_____________________________________________________________________________________
-       |                                        |                             
- Cmd   | Description                            | Syntax
-_______|________________________________________|____________________________________
-ls     | List directory contents                | ls [options(s)] [file(s)]
-echo   | Print text to terminal                 | echo [option(s)] [string(s)]
-touch  | Create a new file                      | touch [option(s)] file_name(s)
-mkdir  | Create a new directory                 | mkdir [option(s)] directory_name(s)
-grep   | Search text for specified pattern      | grep [option(s)] pattern [file(s)]
-man    | Print manual or get help for a command | man [options(s)] keyword(s)
-pwd    | Print current directory                | pwd [option(s)]
-cd     | Change current directory               | cd [option(s)] directory
-mv     | Move or rename directory               | mv [option(s)] arguments(s)
-rmdir  | Remove directory                       | rmdir [option(s)] directory_names
-locate | Find a specific file or directory      | locate [option(s)] file_name(s)
-less   | View file without opening an editor    | less file_name
-"
+# Coloured man pages
+export LESS_TERMCAP_mb=$'\e[1;32m'
+export LESS_TERMCAP_md=$'\e[1;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;4;31m'
+
+set mark-symlinked-directories on
+
+echo -e "\e[01;35mbash ${BASH_VERSION}\e[0m\n\n"
