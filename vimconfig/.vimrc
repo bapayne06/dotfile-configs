@@ -1,9 +1,17 @@
-"        _                    
-" __   _(_)_ __ ___  _ __ ___ 
-" \ \ / / | '_ ` _ \| '__/ __|
-"  \ V /| | | | | | | | | (__ 
-" (_)_/ |_|_| |_| |_|_|  \___|
-" ----------------------------
+"    db    db d888888b .88b  d88. d8888b.  .o88b.    
+"    88    88   `88'   88'YbdP`88 88  `8D d8P  Y8    
+"    Y8    8P    88    88  88  88 88oobY' 8P         
+"    `8b  d8'    88    88  88  88 88`8b   8b         
+" db  `8bd8'    .88.   88  88  88 88 `88. Y8b  d8    
+" VP    YP    Y888888P YP  YP  YP 88   YD  `Y88P'    
+"                                                    
+"                                                    
+"  .o88b.  .d88b.  d8b   db d88888b d888888b  d888b  
+" d8P  Y8 .8P  Y8. 888o  88 88'       `88'   88' Y8b 
+" 8P      88    88 88V8o 88 88ooo      88    88      
+" 8b      88    88 88 V8o88 88~~~      88    88  ooo 
+" Y8b  d8 `8b  d8' 88  V888 88        .88.   88. ~8~ 
+"  `Y88P'  `Y88P'  VP   V8P YP      Y888888P  Y888P  
 
 " Leader key for custom mapping
 let g:mapleader="."
@@ -54,7 +62,7 @@ set shiftround
 
 set smarttab expandtab
 
-set tabstop=4 softtabstop=4 shiftwidth=4
+set softtabstop=4 shiftwidth=4
 
 set hlsearch
 
@@ -78,7 +86,7 @@ set ruler
 
 set encoding=utf-8
 
-set debug="msg","throw"
+"set debug="msg","throw"
 
 set foldmethod=manual
 
@@ -94,13 +102,14 @@ syntax on
 " project name of the github repo as found in 
 " it's github link.
 
+" -------------------------------------------------------------
+
 call plug#begin('~/.vim/plugged')
 " -- General Plugins --
+
 Plug 'dense-analysis/ale'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-
-Plug 'junegunn/fzf.vim'
 
 Plug 'airblade/vim-gitgutter'
 
@@ -114,33 +123,35 @@ Plug 'itchyny/lightline.vim'
 
 Plug 'max-baz/lightline-ale'
 
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 
 Plug 'cdelledonne/vim-cmake'
 
+Plug 'ycm-core/YouCompleteMe'
+
+Plug 'rdnetto/YCM-Generator'
+
+Plug 'lengarvey/base16-vim'
 
 " -- Colorscheme Plugins -- 
 
 Plug 'zautumnz/angr.vim'
 
-Plug 'andreasvc/vim-256noir'
-
-Plug 'w0ng/vim-hybrid'
-
-Plug 'joshdick/onedark.vim'
+Plug 'chriskempson/base16-vim'
 
 Plug 'fmoralesc/molokayo'
 
 Plug 'lucasprag/simpleblack'
 
+Plug 'altercation/vim-colors-solarized'
+
 call plug#end()
 
-" -------------------------- More Plugin Settings --------------------------
+" -------------------- More Plugin Settings --------------------
 
 " Sets characters to be used by indentLine plugin
 let g:indentLine_char_list=['|','¦','┆','┊'] " "
 
-" emmet-vim plugin settings.
 let g:user_emmet_install_=0
 
 let NERDTreeShowLineNumbers=1
@@ -148,48 +159,18 @@ let NERDTreeMinimalUI=1
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['__pycache__', '.swp', '.swo']
 
-" Enable per-command history for fzf
 let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history' 
+
+if version >= 902
+    let b:ycm_enable_inlay_hints=1
+endif
 
 " }}} 
 
 " -------------------------- SCRIPTING -------------------------- {{{
 
-" ------------------------ PLUGIN CONFIG ------------------------
+" ------------------ PLUGIN CONFIG --------------------
 
-" NERDTree plugin
-if &runtimepath =~ 'nerdtree'
-    augroup NERD
-        autocmd!
-        " Start NERDTree when Vim starts alongside a directory argument.
-        autocmd StdinReadPre * let s:std_in=1
-        autocmd VimEnter * if argc()==1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-                            \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-    augroup END
-endif
-
-" Set fzf plugin display colours
-if &runtimepath =~ 'fzf.vim'
-    let g:fzf_colors=  
-    \ { 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Normal'],
-    \ 'query':   ['fg', 'Normal'],
-    \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'border':  ['fg', 'Ignore'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'], }
-endif
-
-function! FiletypeLightline()
-    let filetype = '%{&ft!=#""?&ft:" "}'
-endfunction
 
 if &runtimepath =~ 'lightline.vim' 
     " Status line configuration via lightline plugin
@@ -200,9 +181,6 @@ if &runtimepath =~ 'lightline.vim'
         \ },
         \ 'component': {
         \ 'asciitext': 'Ascii:',
-        \ },
-        \ 'component_function': {
-        \ 'filetype': 'FiletypeLightline',
         \ },
         \ 'component_expand': {
         \   'linter_checking': 'lightline#ale#checking',
@@ -233,34 +211,39 @@ endif
 
 " -------------------------- MAPPINGS -------------------------- {{{
 
-" ':mapclear' followed by a command family such as insert mode to 
-"  remove all mappings for that family
+" ':mapclear' in command line to unset all custom binds
 
 " ---------------- General -----------------
 
 " Save current file
 nnoremap <C-s> :w<CR>
+vnoremap <C-s> :w<CR>
 
 " Run .vimrc file if detectable
-nnoremap <leader>, :source $MYVIMRC<CR>
+nnoremap <leader>, :silent source $MYVIMRC<CR>
+vnoremap <leader>, :silent source $MYVIMRC<CR>
 
 " Toggle highlight search
 nnoremap <leader>h :set hlsearch! hlsearch?<CR>
+vnoremap <leader>h :set hlsearch! hlsearch?<CR>
 
 " Retab
 nnoremap re :retab<CR>
 
-" Insert mode escape bind
+" Close focused buffer
+nnoremap tt :close<CR>
 
-
+" Vim-Plug
+cnoremap :PlugIn :PlugInstall<CR>
 
 " Cut
-noremap <C-x> "+x
+cnoremap <C-x> "+x
+nnoremap <C-x> "+x
 " Copy
 vnoremap <C-c> "+y
+nnoremap <C-c> "+y
 " Paste
 vnoremap <C-v> "+gP
-" Paste (Insert mode)
 nnoremap <C-v> "+gP
 
 " ----------------- Plugin mappings -----------------
@@ -268,89 +251,125 @@ nnoremap <C-v> "+gP
 nnoremap <leader>t :NERDTreeToggle<CR>
 nnoremap <leader>f :NERDTreeFind<CR>
 
-
+nnoremap <leader>c :YcmGenerateConfig<CR>
 
 " }}}
  
 " -------------------------- AUTOCOMMANDS -------------------------- {{{
 
-"-------------------------- FORMATTING -------------------------- 
+"-------------------------- FILE FORMAT -------------------------- 
 
-" vim files
+" vim files 
 augroup filetype_vim:
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker foldmarker={{{,}}} 
-    autocmd FileType vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
+  autocmd!
+  
+  autocmd FileType vim setlocal foldmethod=marker foldmarker={{{,}}}
+  
+  autocmd FileType vim setlocal smarttab expandtab shiftround
+  
+  autocmd FileType vim setlocal softtabstop=2 shiftwidth=2
 augroup END
 
-" makefiles
+" makefiles 
 augroup filetype_make
-    autocmd!
-    autocmd FileType make setlocal noexpandtab softabstop=0
+  autocmd!
+
+  autocmd FileType make setlocal noexpandtab nosmarttab noshiftround
+  
+  autocmd FileType make setlocal softtabstop=0 shiftwidth=0
 augroup END
 
-" python files
+" python files 
 augroup filetype_py
-    autocmd! 
-    autocmd FileType py setlocal foldmethod=indent
+  autocmd!
+  
+  autocmd FileType py setlocal foldmethod=indent
 augroup END
 
-" LaTeX files
+" LaTeX files 
 augroup TexTags
-    autocmd!
-    autocmd filetype tex let b:latex=1
+  autocmd!
+  
+  autocmd filetype tex let b:latex=1
 augroup end
 
-" html and css files
+" html and css files 
 augroup html_css
-    autocmd!
-    autocmd FileType html,css EmmetInstall
+  autocmd!
+  
+  autocmd FileType html EmmetInstall
 augroup END
 
-" ----------------- Compile & Debug -----------------
+augroup filetype_txt
+  autocmd!
+  
+  autocmd FileType txt setlocal nolist softtabstop=2
+  
+  autocmd FileType txt setlocal shiftwidth=2
+augroup END
+
+" ----------------- Compile & Debug ----------------- 
 
 augroup file_compile
-    autocmd!
-    
-  " --------- specific settings --------- 
-    autocmd FileType python nmap <buffer> <F5> :w<bar>:exec '!python3' shellescape(@%, 1)<CR>
-
-
-    autocmd FileType python imap <buffer> <F5> :<esc>:w<bar>:exec '!python3' shellescape(@%, 1)<CR>
-
-
-  " --------- c++ specific settings ---------
-    autocmd FileType cpp setlocal makeprg=g++\ -Wall\ -Wextra\ -std=c++23\ -o\ %<\ %
-    
-    " Make/Build
-    autocmd FileType cpp nmap <F4> :w<CR>:make<CR>
-
-    " Make and Run
-    autocmd FileType cpp nmap <F5> :w<CR>:make<CR>:!./%<<CR>
+  autocmd!
+  " --------- Python --------- 
+  autocmd FileType python nmap <buffer> <F5> :w<bar>:exec '!python3' shellescape(@%, 1)<CR>
   
-    " Run
-   autocmd FileType cpp nmap <F6> :w<CR>:!./%<<CR>
-
+  " --------- C --------- 
+  
+  autocmd FileType cc setlocal foldmethod=marker foldmarker={,}
+  
+  autocmd FileType cc setlocal makeprg=gcc\ -Wall\ -Wextra\ -std=c23\ -o\ %<\ %
+  
+  autocmd FileType cc nmap <F4> :w<CR>:make<CR>
+  
+  autocmd FileType cc nmap <F5> :w<CR>:make<CR>:!./%<<CR>
+  
+  autocmd FileType cc nmap <F6> :w<CR>:!./%<<CR>
+  
+  " --------- C++ --------- 
+  
+  autocmd FileType cxx setlocal foldmethod=marker foldmarker={,}
+  
+  autocmd FileType cxx setlocal makeprg=g++\ -Wall\ -Wextra\ -std=c++23\ -o\ %<\ %
+  
+  autocmd FileType cxx nmap <F4> :w<CR>:make<CR>
+  
+  autocmd FileType cxx nmap <F5> :w<CR>:make<CR>:!./%<<CR>
+  
+  autocmd FileType cxx nmap <F6> :w<CR>:!./%<<CR>
+  
+  " --------- C# --------- 
+  
+  autocmd FileType cs setlocal makeprg=dotnet\ build\
+                \ property:GenerateFullPaths=true\
+                \ verbosity:quiet\
+                \ errorformat=%f(%l\,%c):\ %t%n\ %m\
+  
+  autocmd FileType cs nmap <F4> :w<CR>:!dotnet run<CR>
+  
+  autocmd FileType cs nmap <F5> :w<CR>:!dotnet build<CR>
 augroup END
+
 " }}}
 
 " -------------------------- AFTER SETTINGS -------------------------- {{{
 
 " Put any settings that may otherwise be overwritten here 
 
-" -------------------------- Display --------------------------
+" -------------------------- Display -------------------------- 
+
 set noshowmode
-set lines=40 columns=165 " Configures initial window size of Vim
+set lines=40 columns=165 " Configures initial window size of Vim 
 set fillchars=stl:^,stlnc:-,vert:\|,fold:-,diff:-
+
+colorscheme base16-gigavolt
 
 if has('gui_running')
     set background=dark
     set guiheadroom=45
-    colorscheme simpleblack 
 else
-    set t_Co=256
     set background=dark
-    colorscheme simpleblack
 endif
 
 " }}}

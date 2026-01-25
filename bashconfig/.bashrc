@@ -101,14 +101,15 @@ if ! shopt -oq posix; then
 fi
 
 # Coloured man pages
-export LESS_TERMCAP_mb=$'\e[1;32m'
-export LESS_TERMCAP_md=$'\e[1;32m'
-export LESS_TERMCAP_me=$'\e[0m'
-export LESS_TERMCAP_se=$'\e[0m'
-export LESS_TERMCAP_so=$'\e[01;33m'
-export LESS_TERMCAP_ue=$'\e[0m'
-export LESS_TERMCAP_us=$'\e[1;4;31m'
+export MANPAGER="/usr/bin/most -s"
 
 set mark-symlinked-directories on
 
-echo -e "\e[01;35mbash ${BASH_VERSION}\e[0m\n\n"
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        source "$BASE16_SHELL/profile_helper.sh"
+
+
+echo -e "\e[01;37mbash ${BASH_VERSION}\e[0m\n\n"
