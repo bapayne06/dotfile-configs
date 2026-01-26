@@ -111,5 +111,4 @@ BASE16_SHELL="$HOME/.config/base16-shell"
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         source "$BASE16_SHELL/profile_helper.sh"
 
-
 echo -e "\e[01;37mbash ${BASH_VERSION}\e[0m\n\n"
