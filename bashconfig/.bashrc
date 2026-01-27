@@ -59,8 +59,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-
-
 if [ "$color_prompt" = yes ]; then
     PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)';
     PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;231;1m\][\[\e[38;5;220m\]\A\[\e[97m\]]\[\e[0m\] \[\e[38;5;196;1m\]${PS1_CMD1}\n\[\e[38;5;118m\]\u@\h:\[\e[0m\] \[\e[38;5;40;1m\]\w\[\e[0m\] \[\e[38;5;40m$\[\e[0m\] '
@@ -86,7 +84,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f "$HOME/.bash_aliases" ]; then
-    . "$HOME/.bash_aliases"
+	. "$HOME/.bash_aliases"
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -100,10 +98,13 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Coloured man pages
 export MANPAGER="/usr/bin/most -s"
 
 set mark-symlinked-directories on
+
+set NNN_TMPFILE='/tmp/.lastd'
+BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
+export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
 
 # Base16 Shell
 BASE16_SHELL="$HOME/.config/base16-shell"
@@ -111,4 +112,7 @@ BASE16_SHELL="$HOME/.config/base16-shell"
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         source "$BASE16_SHELL/profile_helper.sh"
 
-echo -e "\e[01;37mbash ${BASH_VERSION}\e[0m\n\n"
+
+echo -e "\e[01;37mbash ${BASH_VERSION}\n\n\
+'htop' for system monitor\n\
+'nnn' for file manager\e[0m"

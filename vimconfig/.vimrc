@@ -11,6 +11,8 @@ let g:mapleader="."
 
 filetype on
 
+filetype detect
+
 filetype plugin indent on
 
 set noswapfile
@@ -32,7 +34,7 @@ set confirm
 if version >= 703
 	set undodir=~/.vim/backup
 	set undofile
-	set undoreload=10000 
+	set undoreload=10000
 endif
 
 if has('mouse')
@@ -94,18 +96,17 @@ call plug#begin('~/.vim/plugged')
 " -- General Plugins --
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'airblade/vim-gitgutter'
 Plug 'preservim/nerdtree'
 Plug 'Yggdroot/indentLine'
-Plug 'mattn/emmet-vim'
 Plug 'itchyny/lightline.vim'
 Plug 'max-baz/lightline-ale'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'cdelledonne/vim-cmake'
+Plug 'godlygeek/tabular'
+Plug 'LunarWatcher/auto-pairs', {'tag': '*'}
 Plug 'ycm-core/YouCompleteMe'
-Plug 'rdnetto/YCM-Generator'
-Plug 'lengarvey/base16-vim'
 " -- Colorscheme Plugins -- 
+Plug 'lengarvey/base16-vim'
 Plug 'zautumnz/angr.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'fmoralesc/molokayo'
@@ -128,9 +129,9 @@ let NERDTreeIgnore=['__pycache__', '.swp', '.swo']
 
 let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history' 
 
-if version >= 902
-	let b:ycm_enable_inlay_hints=1
-endif
+let g:ycm_enable_semantic_highlighting=1
+
+let g:AutoPairsMapSpace=0
 
 " }}} 
 
@@ -161,7 +162,7 @@ if &runtimepath =~ 'lightline.vim'
 	\ 'component': {
 	\ 'asciitext': 'Ascii:',
 	\ 'columntext': 'Col:',
-	\ 'linetext': 'Line:',
+	\ 'linetext': 'Row:',
 	\ },
 	\ 'component_function': {
 	\ 'filetype': 'ShowFileType',
@@ -182,12 +183,12 @@ if &runtimepath =~ 'lightline.vim'
 	\ },
 	\ 'active': {
 	\ 'left': [ [ 'readonly', 'mode', ],
-	\ 		[ 'filetype', 'absolutepath', ],
-	\ 		[ 'fileformat', ] ],
+	\		[ 'filetype', 'relativepath', ],
+	\		[ 'fileformat', ] ],
 	\ 'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings',
-	\					'linter_infos', 'linter_ok', ],
-	\					[ 'percent', 'asciitext', 'charvalue', ],
-	\					[ 'columntext', 'column', 'linetext', 'line', ] ] },
+	\		'linter_infos', 'linter_ok', ],
+	\		[ 'percent', 'asciitext', 'charvalue', ],
+	\		[ 'columntext', 'column', 'linetext', 'line', ] ] },
 	\ }
 	
 endif
@@ -196,53 +197,43 @@ endif
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
 
-" ':mapclear' in command line to unset all custom binds
+" ':mapclear' & ':source' in command line to reset all custom binds
 
 " ---------------- General -----------------
 
 " Save current file
-nnoremap <C-s> :w<CR>
-vnoremap <C-s> :w<CR>
+nnoremap <C-S> :w<CR>
 
 " Run .vimrc file if detectable
-nnoremap <leader>, :source $MYVIMRC<CR>
-vnoremap <leader>, :source $MYVIMRC<CR>
+noremap <leader>, :source $MYVIMRC<CR>
 
 " Toggle highlight search
-nnoremap <leader>h :set hlsearch! hlsearch?<CR>
-vnoremap <leader>h :set hlsearch! hlsearch?<CR>
+nnoremap <leader>' :set hlsearch! hlsearch?<CR>
 
 " Retab
-nnoremap re :set noexpandtab<CR>:retab!<CR>
+nnoremap re :set noexpandtab<BAR>retab!<CR>
 
 "Split tab
-vnoremap tt :tab split<CR>
 nnoremap tt :tab split<CR>
 " Close tab
-vnoremap ty :tab close<CR>
-nnoremap ty :tab close <CR>
+nnoremap rr :tab close<CR>
+
+" Cut
+vnoremap <C-X> "+x
+" copy
+vnoremap <C-C> "+y
+" Paste
+vnoremap <C-V> "+gP
+
+" ----------------- Plugin mappings -----------------
 
 " Vim-Plug shortform
 cnoremap :PlugIn :PlugInstall<CR>
 
-" Cut
-cnoremap <C-x> "+x
-nnoremap <C-x> "+x
-" Copy
-vnoremap <C-c> "+y
-nnoremap <C-c> "+y
-" Paste
-vnoremap <C-v> "+gP
-nnoremap <C-v> "+gP
-
-" Set to 
-
-" ----------------- Plugin mappings -----------------
-
 nnoremap <leader>t :NERDTreeToggle<CR>
 nnoremap <leader>f :NERDTreeFind<CR>
 
-nnoremap <leader>c :YcmGenerateConfig<CR>
+imap <C-L> <Plug>(YCMToggleSignatureHelp)
 
 " }}}
 
@@ -342,7 +333,7 @@ set fillchars=stl:^,stlnc:-,vert:\|,fold:-,diff:-
 
 if has('gui_running')
 	set background=dark
-	colorscheme base16-3024
+	silent! colorscheme base16-3024
 	set guiheadroom=45
 else
 	set t_Co=256
