@@ -2,12 +2,14 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+export HOME="/home/bpayne"
+
 # Force on 256color, added by Brayden for scripting
 export TERM=xterm-256color
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;                               
+    *i*) ;;
       *) return;;
 esac
 
@@ -61,7 +63,7 @@ fi
 
 if [ "$color_prompt" = yes ]; then
     PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)';
-    PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;231;1m\][\[\e[38;5;220m\]\A\[\e[97m\]]\[\e[0m\] \[\e[38;5;196;1m\]${PS1_CMD1}\n\[\e[38;5;118m\]\u@\h:\[\e[0m\] \[\e[38;5;40;1m\]\w\[\e[0m\] \[\e[38;5;40m$\[\e[0m\] '
+    PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;231;1m\][\[\e[38;5;220m\]\A\[\e[97m\]]\[\e[0m\] \[\e[38;5;196;1m\]${PS1_CMD1}\n\[\e[38;5;118m\]\u@\h:\[\e[0m\] \[\e[38;5;40;1m\]\w\[\e[0m\] \[\e[38;5;40m$ \[\e[0m\]'
 
 else
     PS1='${debian_chroot:+($debian_chroot)}\t\n\u@\h:\w\$ '
@@ -83,9 +85,9 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f "$HOME/.bash_aliases" ]; then
-	. "$HOME/.bash_aliases"
-fi
+# if [ -f "$HOME/.bash_aliases" ]; then
+# 	. "$HOME/.bash_aliases"
+# fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -102,9 +104,18 @@ export MANPAGER="/usr/bin/most -s"
 
 set mark-symlinked-directories on
 
-set NNN_TMPFILE='/tmp/.lastd'
-BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
-export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+# Startup nnn file manager if installed 
+if dpkg -s nnn &> /dev/null; then
+	[ -n "$NNNLVL" ] && PS1="N$NNNLVL $PS1"
+	export NNN_TMPFILE='/tmp/.lastd'
+	export NNN_PLUG='e:-xdgdefault;g:getplugs;m:mp3conv;r:rsynccp;s:organize'
+# No clue what this does but ima keep it 
+	# nnn_cd(){
+	# 	if ! [ -z "$NNN_PIPE"  ]; then
+	# 		printf "%s\0" "0c${PWD}" > "${NNN_PIPE}" !&
+	# 	fi
+	# }
+fi
 
 # Base16 Shell
 BASE16_SHELL="$HOME/.config/base16-shell"
@@ -112,7 +123,56 @@ BASE16_SHELL="$HOME/.config/base16-shell"
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         source "$BASE16_SHELL/profile_helper.sh"
 
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	alias ls='nnn -de'
+	alias dir='dir --color=auto'
+	alias vdir='vdir --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias sc='source ~/.bashrc'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" 
+"$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"' \
+
+alias c='clear'
+
+alias lsa='ls -a'
+alias lsl='ls -l'
+
+alias home='cd ~'
+alias root='cd /'
+
+alias gs='git status'
+
+# nnn terminal file manager
+alias nnn='nnn -H'
+alias nf='nnn -H'
+alias Nf='sudo nnn -H'
+alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
+
+# terminal package manager
+alias Apt='aptitude'
+
+# htop system monitor
+alias ht='htop'
+
+
+export EDITOR="usr/bin/gvim"
+export VISUAL="usr/bin/gvim"
+
 
 echo -e "\e[01;37mbash ${BASH_VERSION}\n\n\
-'htop' for system monitor\n\
-'nnn' for file manager\e[0m"
+'ht' for system monitor\n\
+'nf' for file manager ('Nf' for sudo)\n\
+'Apt' for package manager\e[0m\n"
