@@ -108,14 +108,9 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'sheerun/vim-polyglot'
 Plug 'editorconfig/editorconfig-vim'
-" vim-airline requires powerline fonts for symbols
-Plug 'vim-airline/vim-airline'
-Plug 'bling/vim-bufferline'
 " -- Colorscheme Plugins --
-Plug 'vim-airline/vim-airline-themes'
-Plug 'lengarvey/base16-vim'
+Plug 'jaredgorski/spacecamp'
 Plug 'zautumnz/angr.vim'
-Plug 'chriskempson/base16-vim'
 Plug 'fmoralesc/molokayo'
 Plug 'lucasprag/simpleblack'
 Plug 'altercation/vim-colors-solarized'
@@ -146,18 +141,9 @@ let g:EditorConfig_exclude_patterns=['fugitive://.*']
 
 " Prevents bufferline plugin from echoing to command line
 let g:bufferline_echo=0
-
-let g:airline_detect_modified=1
-let g:airline#extensions#tabline#enabled=0
-let g:airline_powerline_fonts=1
+let g:bufferline_show_bufnr =0 
 
 " }}} 
-
-" ----------------------------- SCRIPTS ----------------------------- {{{
-
-
-
-" }}}
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
 
@@ -208,24 +194,19 @@ imap <C-l> <Plug>(YCMToggleSignatureHelp)
 
 "-------------------------- PLUGINS -------------------------- 
 " vim-bufferline integration with vim-airline
-augroup buffer_statusline
-	autocmd!
-	autocmd VimEnter * let &statusline='%{bufferline#refresh_status()}'
-				\ .bufferline#get_status_string()
-augroup END
+" augroup buffer_statusline
+"	autocmd!
+"	autocmd VimEnter * let &statusline='%{bufferline#refresh_status()}'
+"				\ .bufferline#get_status_string()
+" augroup END
 
 "-------------------------- FILE FORMAT -------------------------- 
-" Bash files
-augroup filetype_sh
-	autocmd!
-	autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
-augroup END
+
 
 " vim files 
 augroup filetype_vim
 	autocmd!
 	autocmd FileType vim setlocal foldmethod=marker foldmarker={{{,}}}
-	autocmd FileType vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
 " makefiles 
@@ -294,27 +275,63 @@ augroup file_compile
 
 " }}}
 
- " ----------------------------- AFTER ----------------------------- {{{
+" ----------------------------- STATUS LINE ----------------------------- {{{
 
-" Any settings that may otherwise be overwritten 
+" Return current mode for status line
+function! ReturnCurrentMode() abort
+	let CurrentMode=mode()
+	if CurrentMode=='n'
+		return "NORMAL"
+	elseif CurrentMode=='i'
+		return "INSERT"
+	elseif CurrentMode=='v'||'V'
+		return "VISUAL"
+	elseif CurrentMode==''||'b'
+		return "V-BLOCK"
+	elseif CurrentMode=='R'
+		return "REPLACE"
+	elseif CurrentMode=='c'
+		return "COMMAND"
+	else
+		return "?"
+	endif
+endfunction
 
-" -------------------------- Display -------------------------- 
+" }}}
 
-set noshowmode
-set lines=40 columns=165 " Configures initial window size of Vim 
-set fillchars=stl:^,stlnc:-,vert:\|,fold:-,diff:-
+" ----------------------------- STATUS LINE ----------------------------- {{{
 
+hi User1 term=bold guibg=#00cc11
 
-if has('gui_running')
-	set background=dark
-	silent! colorscheme base16-3024
-	set guiheadroom=45
-else
-	set t_Co=256
-	set background=dark
-endif
+" Clear status line
+set statusline=
+" Return specified function
+set statusline+=\ %{%ReturnCurrentMode()%}\ \|
+" File type
+set statusline+=%(\ %Y%)\ \|
+" File path
+set statusline+=%(\ %F%)
+" File modified flag
+set statusline+=%m\ \|
+" File flags
+set statusline+=%(\ %R\ %H\ %W\ \|%)
 
-set showcmd
+" Right-align all components after this
+set statusline+=%=
+
+" Hexadecimal value of character under cursor
+set statusline+=%(\|\ Unicode:\ %b\ %)
+" Current line in file
+set statusline+=%(\|\ \Row:\ %l%)
+" Amount of lines in buffer
+set statusline+=%(\/%L\ %)
+
+set statusline+=%(\|\ \Col:\ %c%V\ %)
+" Lines passed in file as percentage
+set statusline+=\|\ %p%%\ 
+
+" }}}
+
 " ----------------------------- AFTER ----------------------------- {{{
 
 " Any settings that may otherwise be overwritten 
@@ -325,13 +342,13 @@ set noshowmode
 set lines=40 columns=165 " Configures initial window size of Vim 
 set fillchars=stlnc:-,vert:\|,fold:-,diff:-
 
-if &runtimepath=~"vim-airline"
-	let g:airline_theme='base16_3024'
-endif
+" if &runtimepath=~"vim-airline"
+"	let g:airline_theme='hybridline'
+" endif
 
 if has('gui_running')
 	set background=dark
-	silent! colorscheme base16-3024
+	silent! colorscheme spacecamp
 	set guiheadroom=45
 else
 	set t_Co=256
