@@ -100,6 +100,9 @@ fi
 
 export MANPAGER="/usr/bin/most -s"
 
+export EDITOR="vim --nofork"
+export VISUAL="gvim --nofork"
+
 set mark-symlinked-directories on
 
 # Startup nnn file manager if installed 
@@ -147,13 +150,6 @@ alias nf='nnn -H'
 alias Nf='sudo nnn -H'
 alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
 
-# terminal package manager
-alias Apt='aptitude'
-
-# htop system monitor
-alias ht='htop'
-
-export EDITOR="vim --nofork"
-export VISUAL="gvim --nofork"
+source /usr/share/autojump/autojump.sh
 
 echo -e "\e[01;15mbash ${BASH_VERSION}\e[0m\n\n"

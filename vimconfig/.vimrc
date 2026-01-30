@@ -13,11 +13,15 @@ filetype plugin indent on
 
 filetype detect
 
+set lazyredraw
+
+set ttyfast
+
 set noswapfile
 
 set autochdir
 
-set number relativenumber
+set number
 
 set wildmenu wildmode=longest:full,full
 
@@ -27,7 +31,7 @@ set laststatus=2 showtabline=2
 
 set nocompatible
 
-set confirm 
+set confirm
 
 if version >= 703
 	set undodir=~/.vim/backup
@@ -36,10 +40,29 @@ if version >= 703
 endif
 
 if has('mouse')
+	" Mouse available in all modes
 	set mouse=a
+	
+	" Regular scrolling
+	noremap <ScrollWheelDown> 2<C-E>
+	noremap <ScrollWheelUp> 2<C-Y>
+
+	" Shift held while scrolling = Half-page scroll
+	noremap <S-ScrollWheelDown> <C-F>
+	noremap <S-ScrollWheelUp> <C-B>
+	
+	" Ctrl held while scrolling = One page scroll
+	noremap <C-ScrollWheelDown> <C-D>
+	noremap <C-ScrollWheelUp> <C-U>
+	
+	" Scrolling with insert mode = Escape insert mode
+	inoremap <ScrollWheelDown> <esc>
+	inoremap <ScrollWheelUp> <esc>
 endif
 
 " -------------------------- Files & Text --------------------------
+
+
 
 set linespace=2
 
@@ -81,6 +104,43 @@ syntax on
 
 " }}}
 
+" ----------------------------- SCRIPTS ----------------------------- {{{
+
+hi statreplace guibg=#df0000
+
+hi statinsert guibg=#00ff00
+
+hi statnormal guibg=#c6c6c6
+
+hi statvisual guibg=#8700af
+
+hi statcommand guibg=#2178f7
+
+" Return current mode for status line
+function! ReturnCurrentMode() abort
+	let l:CurrentMode=mode()
+	if CurrentMode=='n'
+		return "NORMAL"
+	elseif CurrentMode=='i'
+		return "INSERT"
+	elseif CurrentMode=='v'||'V'
+		return "VISUAL"
+	elseif CurrentMode==''||'b'
+		return "V-BLOCK"
+	elseif CurrentMode=='R'
+		return "REPLACE"
+	elseif CurrentMode=='c'
+		return "COMMAND"
+	endif
+endfunction
+
+function! GitBranchName() abort
+	let branch = trim(system("git rev-parse --abbrev-ref HEAD 2>/dev/null"))
+	return branch
+endfunction
+
+" }}}
+
 " ----------------------------- PLUGINS ----------------------------- {{{
 
 " External Vim Plugins handled through Vim-Plug Manager
@@ -99,15 +159,14 @@ call plug#begin('~/.vim/plugged')
 " -- General Plugins --
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'preservim/nerdtree'
 Plug 'Yggdroot/indentLine'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'LunarWatcher/auto-pairs', {'tag': '*'}
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'sheerun/vim-polyglot'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'Vimjas/vint'
 " -- Colorscheme Plugins --
 Plug 'jaredgorski/spacecamp'
 Plug 'zautumnz/angr.vim'
@@ -124,11 +183,6 @@ let g:indentLine_char_list=['|','¦','┆','┊'] " "
 
 let g:user_emmet_install_=0
 
-let NERDTreeShowLineNumbers=1
-let NERDTreeMinimalUI=1
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['__pycache__', '.swp', '.swo']
-
 let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history' 
 
 " Syntax highlighting on-off setting from YCM plugin
@@ -141,7 +195,23 @@ let g:EditorConfig_exclude_patterns=['fugitive://.*']
 
 " Prevents bufferline plugin from echoing to command line
 let g:bufferline_echo=0
-let g:bufferline_show_bufnr =0 
+let g:bufferline_show_bufnr =0
+
+" Turn off git plugin global mappings
+let g:fugitive_no_maps=1
+
+let g:ale_fixers={
+			\ 'python':[
+			\ 'pycln',
+			\ 'pyflyby',
+			\ ],
+			\ }
+
+let g:ale_linter_aliases={
+			\ 'vim': ['vint'],
+			\ }
+
+call ale#Set('vim_vint_show_style_issues',1)
 
 " }}} 
 
@@ -152,10 +222,10 @@ let g:bufferline_show_bufnr =0
 " ---------------- General -----------------
 
 " Save current file 
-nnoremap <C-s> :w<CR>
+nnoremap <F3> :w<CR>
 
-" Run .vimrc file if detectable 
-noremap <leader>s :source ~/.vimrc<CR>
+" Run .vimrc file if detectable and :edit to refresh
+nnoremap <leader>s :source ~/.vimrc<CR>:edit %<CR>
 
 " Toggle highlight search 
 nnoremap <leader>' :set hlsearch!<CR>:set hlsearch?<CR>
@@ -220,7 +290,7 @@ augroup END
 augroup filetype_py
 	autocmd!
 	autocmd FileType py setlocal foldmethod=indent
-	autocmd FileType python nmap <buffer> <F5> :w<bar>:exec '!python3' shellescape(@%, 1)<CR>
+	autocmd FileType python nnoremap <buffer> <F5> :w<bar>:exec '!python3' shellescape(@%, 1)<CR>
 augroup END
 
 " LaTeX files 
@@ -243,28 +313,30 @@ augroup END
 
 " ----------------- Compile & Debug ----------------- 
 augroup file_compile
+	" For C and C++, <F4> is compile, <F5> is compile and run, and <F6> is run.
 	autocmd!
 	 " --------- C --------- 
 	autocmd FileType c setlocal foldmethod=marker foldmarker={,}
 	
 	autocmd FileType c setlocal makeprg=gcc\ -Wall\ -Wextra\ -std=c23\ -o\ %<\ %
 	
-	autocmd FileType c nmap <F4> :w<CR>:make<CR>
+	autocmd FileType c nnoremap <F4> :w<CR>:make<CR>
 	
-	autocmd FileType c nmap <F5> :w<CR>:make<CR>:!./%<<CR>
+	autocmd FileType c nnoremap <F5> :w<CR>:make<CR>:!./%<<CR>
 	
-	autocmd FileType c nmap <F6> :w<CR>:!./%<<CR>
+	autocmd FileType c nnoremap <F6> :w<CR>:!./%<<CR>
 	
 	 " --------- C++ --------- 
-	autocmd FileType cxx setlocal foldmethod=marker foldmarker={,}
+	autocmd FileType cpp setlocal foldmethod=marker foldmarker={,}
 	
-	autocmd FileType cxx setlocal makeprg=g++\ -Wall\ -Wextra\ -std=c++23\ -o\ %<\ %
+	autocmd FileType cpp setlocal makeprg=g++\ -Wall\ -Wextra\ -Weffc++\
+				\ -Wsign-conversion\ -Wconversion\ -ggdb\ -pedantic-errors\ -std=c++23\ -o\ %<\ %
 	
-	autocmd FileType cxx nmap <F4> :w<CR>:make<CR>
+	autocmd FileType cpp nmap <F4> :w<CR>:make<CR>
 	
-	autocmd FileType cxx nmap <F5> :w<CR>:make<CR>:!./%<<CR>
+	autocmd FileType cpp nmap <F5> :w<CR>:make<CR>:!./%<<CR>
 	
-	autocmd FileType cxx nmap <F6> :w<CR>:!./%<<CR>
+	autocmd FileType cpp nmap <F6> :w<CR>:!./%<<CR>
 	
 	 " --------- C# --------- 
 	autocmd FileType cs setlocal makeprg=dotnet\ build\
@@ -277,56 +349,28 @@ augroup file_compile
 
 " ----------------------------- STATUS LINE ----------------------------- {{{
 
-" Return current mode for status line
-function! ReturnCurrentMode() abort
-	let CurrentMode=mode()
-	if CurrentMode=='n'
-		return "NORMAL"
-	elseif CurrentMode=='i'
-		return "INSERT"
-	elseif CurrentMode=='v'||'V'
-		return "VISUAL"
-	elseif CurrentMode==''||'b'
-		return "V-BLOCK"
-	elseif CurrentMode=='R'
-		return "REPLACE"
-	elseif CurrentMode=='c'
-		return "COMMAND"
-	else
-		return "?"
-	endif
-endfunction
-
-" }}}
-
-" ----------------------------- STATUS LINE ----------------------------- {{{
-
-hi User1 term=bold guibg=#00cc11
 
 " Clear status line
 set statusline=
-" Return specified function
+
 set statusline+=\ %{%ReturnCurrentMode()%}\ \|
 " File type
-set statusline+=%(\ %Y%)\ \|
+set statusline+=%(\ %Y\ \|%)
 " File path
-set statusline+=%(\ %F%)
-" File modified flag
-set statusline+=%m\ \|
+set statusline+=%(\ %F%(\ %m%)%(\ \[%{%GitBranchName()%}]%)\ \|%)
 " File flags
 set statusline+=%(\ %R\ %H\ %W\ \|%)
 
 " Right-align all components after this
 set statusline+=%=
 
-" Hexadecimal value of character under cursor
-set statusline+=%(\|\ Unicode:\ %b\ %)
+set statusline+=%(\|\ %{&fileencoding?&fileencoding:&encoding}\ %)
+" Column position of cursor
+set statusline+=%(\|\ \Col:\ %c%V\,%)
 " Current line in file
-set statusline+=%(\|\ \Row:\ %l%)
+set statusline+=%(\ %l%)
 " Amount of lines in buffer
 set statusline+=%(\/%L\ %)
-
-set statusline+=%(\|\ \Col:\ %c%V\ %)
 " Lines passed in file as percentage
 set statusline+=\|\ %p%%\ 
 
@@ -339,20 +383,19 @@ set statusline+=\|\ %p%%\
 " -------------------------- Display -------------------------- 
 
 set noshowmode
-set lines=40 columns=165 " Configures initial window size of Vim 
+
 set fillchars=stlnc:-,vert:\|,fold:-,diff:-
 
-" if &runtimepath=~"vim-airline"
-"	let g:airline_theme='hybridline'
-" endif
 
 if has('gui_running')
 	set background=dark
-	silent! colorscheme spacecamp
+	set lines=55 columns=999
+	silent! colorscheme lunaperche
 	set guiheadroom=45
 else
 	set t_Co=256
 	set background=dark
+	silent! colorscheme lunaperche
 endif
 
 set showcmd
