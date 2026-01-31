@@ -4,8 +4,13 @@
 
 export HOME="/home/bpayne"
 
-# Force on 256color, added by Brayden for scripting
+# Force on true color, added by Brayden for scripting
 export TERM=xterm-256color
+force_color_prompt=yes
+
+export GVIM_ENABLE_WAYLAND=1
+
+source /usr/share/autojump/autojump.sh
 
 # If not running interactively, don't do anything
 case $- in
@@ -45,10 +50,7 @@ case "$TERM" in
 		xterm-color|*-256color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_color_prompt=yes
+
 
 if [ -n "$force_color_prompt" ]; then
 		if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -98,8 +100,6 @@ if ! shopt -oq posix; then
 	fi
 fi
 
-export MANPAGER="/usr/bin/most -s"
-
 export EDITOR="vim --nofork"
 export VISUAL="gvim --nofork"
 
@@ -129,13 +129,6 @@ alias l='ls -CF'
 
 alias sc='source ~/.bashrc'
 
-# Add an "alert" alias for long running commands.  Use like so:
-# sleep 10; alert
-# alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" 
-# "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'\
-
-alias c='clear'
-
 alias lsa='ls -a'
 alias lsl='ls -l'
 
@@ -150,8 +143,7 @@ alias nf='nnn -H'
 alias Nf='sudo nnn -H'
 alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
 
-source /usr/share/autojump/autojump.sh
-
-export GVIM_ENABLE_WAYLAND=1
+eval "$(starship init bash)"
+eval "$(starship completions bash)"
 
 echo -e "\e[01;15mbash ${BASH_VERSION}\e[0m\n\n"

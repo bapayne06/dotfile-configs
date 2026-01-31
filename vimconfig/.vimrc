@@ -3,15 +3,7 @@
 " Leader key for custom mapping
 let g:mapleader="."
 
-" ----------------------------- SETTINGS ----------------------------- {{{
-
-" Configure initial vim behaviour
-
-" -------------------------- Vim --------------------------
-
-filetype detect
-filetype plugin on
-filetype indent on
+" ----------------------------- RUNTIMEPATH ----------------------------- {{{
 
 set runtimepath+=~/.vim/autoload
 set runtimepath+=~/.vim/compiler
@@ -24,6 +16,44 @@ set runtimepath+=~/.vim/ftplugin
 set runtimepath+=~/.vim/after
 set runtimepath+=~/.vim/ftdetect
 set runtimepath+=~/.vim/after/ftplugin
+
+" }}}
+
+" ----------------------------- HIGHLIGHT GROUPS ----------------------------- {{{
+
+hi modeNormal guibg=#7e7e7e ctermbg=243
+hi modeInsert guibg=#008700 ctermbg=028
+hi modeVisual guibg=#862ef1 ctermbg=093
+hi modeReplace guibg=#d6421d ctermbg=160
+hi modeCommand guibg=#2178f7 ctermbg=033
+
+hi statusDefault guifg=#ffffff guibg=#4e4e4e ctermfg=15 ctermbg=239
+
+hi statusFile guifg=#080808 guibg=#d0d0d0 ctermfg=0 ctermbg=252
+
+hi statusModified guifg=#eeeeee guibg=#00d700 ctermfg=15 ctermbg=40
+
+hi statusFlag guifg=#080808 guibg=#ffff5f ctermfg=0 ctermbg=227
+
+hi statusGit guifg=#ff0000 guibg=#ffff00 ctermfg=9 ctermbg=226
+
+hi statusEncode guifg=#000000 guibg=#9e9e9e ctermfg=0 ctermbg=247
+
+hi statusCursor guifg=#000000 guibg=#ffffff ctermfg=0 ctermbg=15
+
+hi statusPercent guifg=#000000 guibg=#00afff ctermfg=0 ctermbg=39
+
+" }}}
+
+" ----------------------------- SETTINGS ----------------------------- {{{
+
+" Configure initial vim behaviour
+
+" -------------------------- Vim --------------------------
+
+filetype detect
+filetype plugin on
+filetype indent on
 
 set guioptions-=r guioptions-=L
 
@@ -53,26 +83,7 @@ if version >= 703
 	set undoreload=10000
 endif
 
-if has('mouse')
-	" Mouse available in all modes
-	set mouse=a
-	
-	" Regular scrolling
-	noremap <ScrollWheelDown> 2<C-E>
-	noremap <ScrollWheelUp> 2<C-Y>
-
-	" Shift held while scrolling = Half-page scroll
-	noremap <S-ScrollWheelDown> <C-F>
-	noremap <S-ScrollWheelUp> <C-B>
-	
-	" Ctrl held while scrolling = One page scroll
-	noremap <C-ScrollWheelDown> <C-D>
-	noremap <C-ScrollWheelUp> <C-U>
-	
-	" Scrolling with insert mode = Escape insert mode
-	inoremap <ScrollWheelDown> <esc>
-	inoremap <ScrollWheelUp> <esc>
-endif
+set shortmess-=I
 
 " -------------------------- Files & Text --------------------------
 
@@ -116,32 +127,6 @@ syntax on
 
 " }}}
 
-" ----------------------------- HIGHLIGHT GROUPS ----------------------------- {{{
-
-hi modeNormal guibg=#7e7e7e ctermbg=243
-hi modeInsert guibg=#008700 ctermbg=028
-hi modeVisual guibg=#862ef1 ctermbg=093
-hi modeReplace guibg=#d6421d ctermbg=160
-hi modeCommand guibg=#2178f7 ctermbg=033
-
-hi statusDefault guifg=#ffffff guibg=#4e4e4e ctermfg=15 ctermbg=239
-
-hi statusFile guifg=#080808 guibg=#d0d0d0 ctermfg=0 ctermbg=252
-
-hi statusModified guifg=#eeeeee guibg=#00d700 ctermfg=15 ctermbg=40
-
-hi statusFlag guifg=#080808 guibg=#ffff5f ctermfg=0 ctermbg=227
-
-hi statusGit guifg=#ff0000 guibg=#ffff00 ctermfg=9 ctermbg=226
-
-hi statusEncode guifg=#000000 guibg=#9e9e9e ctermfg=0 ctermbg=247
-
-hi statusCursor guifg=#000000 guibg=#ffffff ctermfg=0 ctermbg=15
-
-hi statusPercent guifg=#000000 guibg=#00afff ctermfg=0 ctermbg=39
-
-" }}}
-
 " ----------------------------- SCRIPTS ----------------------------- {{{
 
 function! ReturnCurrentMode() abort
@@ -177,11 +162,12 @@ endfunction
 " vim-polygot requires this setting *before* being loaded
 let g:polyglot_disabled=['markdown']
 
-call plug#begin('~/.vim/plugged')
+silent! if plug#begin('~/.vim/plugged')
 
 " -- General Plugins --
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 " Plug 'Yggdroot/indentLine'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'LunarWatcher/auto-pairs', {'tag': '*'}
@@ -191,6 +177,8 @@ Plug 'sheerun/vim-polyglot'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Vimjas/vint'
 Plug 'OmniSharp/omnisharp-vim'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-dispatch'
 " -- Colorscheme Plugins --
 Plug 'jaredgorski/spacecamp'
 Plug 'zautumnz/angr.vim'
@@ -199,13 +187,14 @@ Plug 'lucasprag/simpleblack'
 Plug 'altercation/vim-colors-solarized'
 
 call plug#end()
+endif
 
 " -------------------- More Plugin Settings --------------------
 
 " Sets characters to be used by indentLine plugin
 let g:indentLine_char_list=['|','¦','┆','┊'] " "
 
-let g:user_emmet_install_=0
+let g:user_emmet_install_global=0
 
 let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history' 
 
@@ -224,11 +213,42 @@ let g:bufferline_show_bufnr =0
 " Turn off git plugin global mappings
 let g:fugitive_no_maps=1
 
+let g:OmniSharp_server_use_mono=1
+let g:OmniSharp_selector_findusages='fzf'
+let g:OmniSharp_highlighting=0
+
+let g:ale_linters={
+			\ 'cs': ['OmniSharp']
+			\ }
+
 " }}} 
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
 
 " ':mapclear' & ':source' in command line to reset all custom binds
+
+" ---------------- Mouse -----------------
+
+if has('mouse')
+	" Mouse available in all modes
+	set mouse=a
+	
+	" Regular scrolling
+	noremap <ScrollWheelDown> 2<C-e>
+	noremap <ScrollWheelUp> 2<C-y>
+
+	" Shift held while scrolling = Half-page scroll
+	noremap <S-ScrollWheelDown> <C-f>
+	noremap <S-ScrollWheelUp> <C-b>
+	
+	" Ctrl held while scrolling = One page scroll
+	noremap <C-ScrollWheelDown> <C-d>
+	noremap <C-ScrollWheelUp> <C-u>
+	
+	" Scrolling with insert mode = Escape insert mode
+	inoremap <ScrollWheelDown> <esc>
+	inoremap <ScrollWheelUp> <esc>
+endif
 
 " ---------------- General -----------------
 
@@ -283,10 +303,9 @@ set statusline+=%#statusDefault#%(%#statusGit#[%{%GitBranchName()%}]%#statusDefa
 " File path
 set statusline+=%(%#statusFile#\ %F%m\ %)
 " File type
-set statusline+=%(%Y\ %)
+set statusline+=%(\|\ %Y\ %)
 " File flags
 set statusline+=%#statusDefault#%(%#statusFlag#\ %R\ %H\ %W\ %#statusDefault#%)
-
 " Right-align all components after this
 set statusline+=%=
 
@@ -314,6 +333,7 @@ set fillchars=stlnc:-,vert:\|,fold:-,diff:-
 
 if has('gui_running')
 	set termguicolors
+	set guifont=Hack\ Nerd\ Font\ Mono
 	set background=dark
 	set lines=40 columns=170
 	silent! colorscheme molokayo
@@ -321,7 +341,6 @@ if has('gui_running')
 else
 	set t_Co=256
 	set background=dark
-	silent! colorscheme molokayo
 endif
 
 set showcmd

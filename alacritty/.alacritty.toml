@@ -1,0 +1,35 @@
+live_config_reload = true
+
+import = [
+"~/.config/alacritty/themes/themes/campbell.toml",
+]
+
+[env]
+TERM = "alacritty"
+
+[window]
+dimensions = { columns=120,lines=35 }
+decorations = "buttonless"
+dynamic_padding = false
+padding = { x = 1, y = 1 }
+resize_increments = true
+opacity = 0.9
+
+[cursor]
+style = { shape = "Block", blinking="On" }
+
+[font.normal]
+family = "Hack Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+family = "Hack Nerd Font Mono"
+style = "Bold"
+
+[font.italic]
+family = "Hack Nerd Font Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "Hack Nerd Font Mono"
+style = "Bold Italic"
