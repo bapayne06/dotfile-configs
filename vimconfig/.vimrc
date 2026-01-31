@@ -9,9 +9,23 @@ let g:mapleader="."
 
 " -------------------------- Vim --------------------------
 
-filetype plugin indent on
-
 filetype detect
+filetype plugin on
+filetype indent on
+
+set runtimepath+=~/.vim/autoload
+set runtimepath+=~/.vim/compiler
+set runtimepath+=~/.vim/indent
+set runtimepath+=~/.vim/plugin
+set runtimepath+=~/.vim/spell
+set runtimepath+=~/.vim/syntax
+set runtimepath+=~/.vim/templates
+set runtimepath+=~/.vim/ftplugin
+set runtimepath+=~/.vim/after
+set runtimepath+=~/.vim/ftdetect
+set runtimepath+=~/.vim/after/ftplugin
+
+set guioptions-=r guioptions-=L
 
 set lazyredraw
 
@@ -62,8 +76,6 @@ endif
 
 " -------------------------- Files & Text --------------------------
 
-
-
 set linespace=2
 
 set list
@@ -98,39 +110,54 @@ set debug="msg","throw"
 
 set nohlsearch
 
-set foldmethod=manual
+set foldmethod=indent
 
 syntax on
 
 " }}}
 
+" ----------------------------- HIGHLIGHT GROUPS ----------------------------- {{{
+
+hi modeNormal guibg=#7e7e7e ctermbg=243
+hi modeInsert guibg=#008700 ctermbg=028
+hi modeVisual guibg=#862ef1 ctermbg=093
+hi modeReplace guibg=#d6421d ctermbg=160
+hi modeCommand guibg=#2178f7 ctermbg=033
+
+hi statusDefault guifg=#ffffff guibg=#4e4e4e ctermfg=15 ctermbg=239
+
+hi statusFile guifg=#080808 guibg=#d0d0d0 ctermfg=0 ctermbg=252
+
+hi statusModified guifg=#eeeeee guibg=#00d700 ctermfg=15 ctermbg=40
+
+hi statusFlag guifg=#080808 guibg=#ffff5f ctermfg=0 ctermbg=227
+
+hi statusGit guifg=#ff0000 guibg=#ffff00 ctermfg=9 ctermbg=226
+
+hi statusEncode guifg=#000000 guibg=#9e9e9e ctermfg=0 ctermbg=247
+
+hi statusCursor guifg=#000000 guibg=#ffffff ctermfg=0 ctermbg=15
+
+hi statusPercent guifg=#000000 guibg=#00afff ctermfg=0 ctermbg=39
+
+" }}}
+
 " ----------------------------- SCRIPTS ----------------------------- {{{
 
-hi statreplace guibg=#df0000
-
-hi statinsert guibg=#00ff00
-
-hi statnormal guibg=#c6c6c6
-
-hi statvisual guibg=#8700af
-
-hi statcommand guibg=#2178f7
-
-" Return current mode for status line
 function! ReturnCurrentMode() abort
 	let l:CurrentMode=mode()
 	if CurrentMode=='n'
-		return "NORMAL"
+		return '%#modeNormal#' . ' NORMAL'
 	elseif CurrentMode=='i'
-		return "INSERT"
+		return '%#modeInsert#' . ' INSERT'
 	elseif CurrentMode=='v'||'V'
-		return "VISUAL"
+		return '%#modeVisual#' . ' VISUAL'
 	elseif CurrentMode==''||'b'
-		return "V-BLOCK"
+		return '%#modeVisual#' . ' V-BLOCK'
 	elseif CurrentMode=='R'
-		return "REPLACE"
+		return '%#modeReplace#' . ' REPLACE'
 	elseif CurrentMode=='c'
-		return "COMMAND"
+		return '%#modeCommand#' . ' COMMAND'
 	endif
 endfunction
 
@@ -143,11 +170,7 @@ endfunction
 
 " ----------------------------- PLUGINS ----------------------------- {{{
 
-" External Vim Plugins handled through Vim-Plug Manager
-
-" Inserting plugin requires the following syntax:
-
-" Plug '<GithubAuthor>/<GithubProject>'
+" Vim Plugins handled through Vim-Plug
 
 " -------------------------------------------------------------
 
@@ -159,7 +182,7 @@ call plug#begin('~/.vim/plugged')
 " -- General Plugins --
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
 Plug 'LunarWatcher/auto-pairs', {'tag': '*'}
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
@@ -167,6 +190,7 @@ Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Vimjas/vint'
+Plug 'OmniSharp/omnisharp-vim'
 " -- Colorscheme Plugins --
 Plug 'jaredgorski/spacecamp'
 Plug 'zautumnz/angr.vim'
@@ -200,19 +224,6 @@ let g:bufferline_show_bufnr =0
 " Turn off git plugin global mappings
 let g:fugitive_no_maps=1
 
-let g:ale_fixers={
-			\ 'python':[
-			\ 'pycln',
-			\ 'pyflyby',
-			\ ],
-			\ }
-
-let g:ale_linter_aliases={
-			\ 'vim': ['vint'],
-			\ }
-
-call ale#Set('vim_vint_show_style_issues',1)
-
 " }}} 
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
@@ -221,31 +232,34 @@ call ale#Set('vim_vint_show_style_issues',1)
 
 " ---------------- General -----------------
 
-" Save current file 
-nnoremap <F3> :w<CR>
+" Save current file
+noremap <C-s> :w<CR>
 
 " Run .vimrc file if detectable and :edit to refresh
-nnoremap <leader>s :source ~/.vimrc<CR>:edit %<CR>
+nnoremap <leader>/ :w<CR>:source ~/.vimrc<CR>:edit<CR>
 
-" Toggle highlight search 
+" edit commmand to refresh
+nnoremap <leader>, :w<CR>:edit<CR>
+
+" Toggle highlight search
 nnoremap <leader>' :set hlsearch!<CR>:set hlsearch?<CR>
 
-" Retab 
+" Retab
 nnoremap re :set noexpandtab<BAR>retab!<CR>
 
-"Split tab 
+"Split tab
 nnoremap tt :tab split<CR>
-" Close tab 
+" Close tab
 nnoremap rr :tab close<CR>
 
-" Cut 
+" Cut
 vnoremap <C-x> "+x
-" copy 
+" copy
 vnoremap <C-c> "+y
-" Paste 
+" Paste
 vnoremap <C-v> "+gP
 
-" Edit current file with superuser permissions 
+" Edit current file with superuser permissions
 cnoremap :sed :w<CR>:!sudo tee %
 
 " ----------------- Plugin mappings -----------------
@@ -260,125 +274,37 @@ imap <C-l> <Plug>(YCMToggleSignatureHelp)
 
 " }}}
 
-" ----------------------------- AUTOCOMMANDS ----------------------------- {{{
-
-"-------------------------- PLUGINS -------------------------- 
-" vim-bufferline integration with vim-airline
-" augroup buffer_statusline
-"	autocmd!
-"	autocmd VimEnter * let &statusline='%{bufferline#refresh_status()}'
-"				\ .bufferline#get_status_string()
-" augroup END
-
-"-------------------------- FILE FORMAT -------------------------- 
-
-
-" vim files 
-augroup filetype_vim
-	autocmd!
-	autocmd FileType vim setlocal foldmethod=marker foldmarker={{{,}}}
-augroup END
-
-" makefiles 
-augroup filetype_make
-	autocmd!
-	autocmd FileType make setlocal noexpandtab nosmarttab noshiftround
-	autocmd FileType make setlocal tabstop=0 softtabstop=0 shiftwidth=0
-augroup END
-
-" python files 
-augroup filetype_py
-	autocmd!
-	autocmd FileType py setlocal foldmethod=indent
-	autocmd FileType python nnoremap <buffer> <F5> :w<bar>:exec '!python3' shellescape(@%, 1)<CR>
-augroup END
-
-" LaTeX files 
-augroup TexTags
-	autocmd!
-	autocmd filetype tex let b:latex=1
-augroup end
-
-" html and css files 
-augroup html_css
-	autocmd!
-	autocmd FileType html EmmetInstall
-augroup END
-
-augroup filetype_txt
-	autocmd!
-	autocmd FileType txt setlocal nolist tabstop=2
-	autocmd FileType txt setlocal shiftwidth=2 softtabstop=2
-augroup END
-
-" ----------------- Compile & Debug ----------------- 
-augroup file_compile
-	" For C and C++, <F4> is compile, <F5> is compile and run, and <F6> is run.
-	autocmd!
-	 " --------- C --------- 
-	autocmd FileType c setlocal foldmethod=marker foldmarker={,}
-	
-	autocmd FileType c setlocal makeprg=gcc\ -Wall\ -Wextra\ -std=c23\ -o\ %<\ %
-	
-	autocmd FileType c nnoremap <F4> :w<CR>:make<CR>
-	
-	autocmd FileType c nnoremap <F5> :w<CR>:make<CR>:!./%<<CR>
-	
-	autocmd FileType c nnoremap <F6> :w<CR>:!./%<<CR>
-	
-	 " --------- C++ --------- 
-	autocmd FileType cpp setlocal foldmethod=marker foldmarker={,}
-	
-	autocmd FileType cpp setlocal makeprg=g++\ -Wall\ -Wextra\ -Weffc++\
-				\ -Wsign-conversion\ -Wconversion\ -ggdb\ -pedantic-errors\ -std=c++23\ -o\ %<\ %
-	
-	autocmd FileType cpp nmap <F4> :w<CR>:make<CR>
-	
-	autocmd FileType cpp nmap <F5> :w<CR>:make<CR>:!./%<<CR>
-	
-	autocmd FileType cpp nmap <F6> :w<CR>:!./%<<CR>
-	
-	 " --------- C# --------- 
-	autocmd FileType cs setlocal makeprg=dotnet\ build\
-				\ property:GenerateFullPaths=true\
-				\ verbosity:quiet\
-				\ errorformat=%f(%l\,%c):\ %t%n\ %m\
- augroup END
-
-" }}}
-
 " ----------------------------- STATUS LINE ----------------------------- {{{
-
 
 " Clear status line
 set statusline=
-
-set statusline+=\ %{%ReturnCurrentMode()%}\ \|
-" File type
-set statusline+=%(\ %Y\ \|%)
+set statusline+=%{%ReturnCurrentMode()%}\ 
+set statusline+=%#statusDefault#%(%#statusGit#[%{%GitBranchName()%}]%#statusDefault#%)
 " File path
-set statusline+=%(\ %F%(\ %m%)%(\ \[%{%GitBranchName()%}]%)\ \|%)
+set statusline+=%(%#statusFile#\ %F%m\ %)
+" File type
+set statusline+=%(%Y\ %)
 " File flags
-set statusline+=%(\ %R\ %H\ %W\ \|%)
+set statusline+=%#statusDefault#%(%#statusFlag#\ %R\ %H\ %W\ %#statusDefault#%)
 
 " Right-align all components after this
 set statusline+=%=
 
-set statusline+=%(\|\ %{&fileencoding?&fileencoding:&encoding}\ %)
+set statusline+=%#statusDefault#%(%#statusEncode#\ %{&fileencoding?&fileencoding:&encoding}\ %)
 " Column position of cursor
-set statusline+=%(\|\ \Col:\ %c%V\,%)
+set statusline+=%#statusCursor#\ \Col:\ %c%V\,
 " Current line in file
-set statusline+=%(\ %l%)
+set statusline+=\ %l
 " Amount of lines in buffer
-set statusline+=%(\/%L\ %)
+set statusline+=\/%L\ \|
 " Lines passed in file as percentage
-set statusline+=\|\ %p%%\ 
+set statusline+=\ %p%%\ 
 
 " }}}
 
 " ----------------------------- AFTER ----------------------------- {{{
 
-" Any settings that may otherwise be overwritten 
+" Any settings that may otherwise be overwritten
 
 " -------------------------- Display -------------------------- 
 
@@ -386,16 +312,16 @@ set noshowmode
 
 set fillchars=stlnc:-,vert:\|,fold:-,diff:-
 
-
 if has('gui_running')
+	set termguicolors
 	set background=dark
-	set lines=55 columns=999
-	silent! colorscheme lunaperche
+	set lines=40 columns=170
+	silent! colorscheme molokayo
 	set guiheadroom=45
 else
 	set t_Co=256
 	set background=dark
-	silent! colorscheme lunaperche
+	silent! colorscheme molokayo
 endif
 
 set showcmd

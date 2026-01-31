@@ -152,4 +152,6 @@ alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/p
 
 source /usr/share/autojump/autojump.sh
 
+export GVIM_ENABLE_WAYLAND=1
+
 echo -e "\e[01;15mbash ${BASH_VERSION}\e[0m\n\n"
