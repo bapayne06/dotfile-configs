@@ -63,8 +63,6 @@ set ttyfast
 
 set noswapfile
 
-set autochdir
-
 set number
 
 set wildmenu wildmode=longest:full,full
@@ -341,6 +339,7 @@ if has('gui_running')
 else
 	set t_Co=256
 	set background=dark
+	silent! colorscheme molokayo
 endif
 
 set showcmd

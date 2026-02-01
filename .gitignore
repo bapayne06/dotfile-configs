@@ -1,2 +1,4 @@
 README.txt
-.luckybackup-snapshots
+vimconfig/.vim/plugged/
+vimconfig/.vim/backup/
+vimconfig/.vim/colors/

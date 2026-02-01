@@ -146,4 +146,4 @@ alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/p
 eval "$(starship init bash)"
 eval "$(starship completions bash)"
 
-echo -e "\e[01;15mbash ${BASH_VERSION}\e[0m\n\n"
+echo -e "\n\e[01;15mbash ${BASH_VERSION}\e[0m\n"

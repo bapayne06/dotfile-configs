@@ -1,10 +1,9 @@
 bpayne88protonmail.com
 
--- This is an organized repository for my dotfile configurations on linux --
+This is a repository dedicated to holding all my configuration files
+for my Linux Mint PC.
 
--- The configurations are also held in a git repository for further 
-editing --
-
--- The main dotfiles are held in their respective directories, while 
-symlinked copies of themselves are held in the user home directory
-for the programs to access. This is done with GNU Stow --
+Files and directories are categorized based on the application/program they
+are used for, all that needs to be done to enable them is using GNU Stow in
+the terminal on each directory inside /.dotfiles to create the needed symlinks
+in the user home directory.
