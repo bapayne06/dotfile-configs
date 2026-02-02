@@ -1,6 +1,5 @@
-" .cpp settings
-
-setlocal foldmethod=marker foldmarker={,}
+setlocal foldmethod=indent
+setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab cindent
 
 setlocal makeprg=g++\ -Wall\ -Wextra\ -Weffc++\
 			\ -Wsign-conversion\ -Wconversion\ -ggdb\

@@ -146,4 +146,8 @@ alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/p
 eval "$(starship init bash)"
 eval "$(starship completions bash)"
 
+# Color scheme for nnn file manager
+BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
+export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+
 echo -e "\n\e[01;15mbash ${BASH_VERSION}\e[0m\n"

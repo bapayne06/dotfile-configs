@@ -1,0 +1,4 @@
+augroup markdownfile
+	autocmd!
+	autocmd BufNewFile,BufRead *.md set filetype=markdown
+augroup END

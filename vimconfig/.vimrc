@@ -21,41 +21,29 @@ set runtimepath+=~/.vim/after/ftplugin
 
 " ----------------------------- HIGHLIGHT GROUPS ----------------------------- {{{
 
-hi modeNormal guibg=#7e7e7e ctermbg=243
-hi modeInsert guibg=#008700 ctermbg=028
-hi modeVisual guibg=#862ef1 ctermbg=093
-hi modeReplace guibg=#d6421d ctermbg=160
-hi modeCommand guibg=#2178f7 ctermbg=033
-
+hi modeNormal guifg=#000000 guibg=#e4e4e4 ctermfg=0 ctermbg=254
+hi modeInsert guifg=#000000 guibg=#00d7ff ctermfg=0 ctermbg=45
+hi modeVisual guifg=#000000 guibg=#b723e8 ctermfg=0 ctermbg=92
+hi modeReplace guifg=#000000 guibg=#d6421d ctermfg=0 ctermbg=160
+hi modeCommand guifg=#000000 guibg=#ffdf00 ctermfg=0 ctermbg=220
 hi statusDefault guifg=#ffffff guibg=#4e4e4e ctermfg=15 ctermbg=239
-
-hi statusFile guifg=#080808 guibg=#d0d0d0 ctermfg=0 ctermbg=252
-
+hi statusFile guifg=#080808 guibg=#9393ff ctermfg=0 ctermbg=105
 hi statusModified guifg=#eeeeee guibg=#00d700 ctermfg=15 ctermbg=40
-
 hi statusFlag guifg=#080808 guibg=#ffff5f ctermfg=0 ctermbg=227
-
 hi statusGit guifg=#ff0000 guibg=#ffff00 ctermfg=9 ctermbg=226
-
 hi statusEncode guifg=#000000 guibg=#9e9e9e ctermfg=0 ctermbg=247
-
-hi statusCursor guifg=#000000 guibg=#ffffff ctermfg=0 ctermbg=15
-
-hi statusPercent guifg=#000000 guibg=#00afff ctermfg=0 ctermbg=39
+hi statusCursor guifg=#000000 guibg=#629fef ctermfg=0 ctermbg=33
+hi screenCursor guifg=black guibg=white ctermfg=0 ctermbg=15
+hi screenInsertCursor guifg=white guibg=#00ff00 ctermfg=15 ctermbg=46
 
 " }}}
 
 " ----------------------------- SETTINGS ----------------------------- {{{
 
-" Configure initial vim behaviour
-
 " -------------------------- Vim --------------------------
 
 filetype detect
-filetype plugin on
-filetype indent on
-
-set guioptions-=r guioptions-=L
+filetype plugin indent on
 
 set lazyredraw
 
@@ -63,7 +51,7 @@ set ttyfast
 
 set noswapfile
 
-set number
+set relativenumber
 
 set wildmenu wildmode=longest:full,full
 
@@ -75,15 +63,19 @@ set nocompatible
 
 set confirm
 
-if version >= 703
-	set undodir=~/.vim/backup
-	set undofile
-	set undoreload=10000
-endif
+set undodir=~/.vim/backup
+set undofile
+set undoreload=10000
 
 set shortmess-=I
 
 " -------------------------- Files & Text --------------------------
+
+set paste
+
+set clipboard=unnamedplus
+
+set textwidth=85
 
 set linespace=2
 
@@ -107,7 +99,7 @@ set ignorecase
 
 set smartcase
 
-set autoindent
+set noautoindent
 
 set cursorline
 
@@ -115,7 +107,7 @@ set ruler
 
 set encoding=utf-8
 
-set debug="msg","throw"
+set debug="msg", "throw"
 
 set nohlsearch
 
@@ -160,15 +152,13 @@ endfunction
 " vim-polygot requires this setting *before* being loaded
 let g:polyglot_disabled=['markdown']
 
-silent! if plug#begin('~/.vim/plugged')
+silent! plug#begin('~/.vim/plugged')
 
 " -- General Plugins --
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Plug 'Yggdroot/indentLine'
 Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
-Plug 'LunarWatcher/auto-pairs', {'tag': '*'}
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
@@ -177,36 +167,33 @@ Plug 'Vimjas/vint'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-surround'
+Plug 'preservim/nerdtree'
+Plug 'cdelledonne/vim-cmake'
 " -- Colorscheme Plugins --
 Plug 'jaredgorski/spacecamp'
-Plug 'zautumnz/angr.vim'
 Plug 'fmoralesc/molokayo'
 Plug 'lucasprag/simpleblack'
-Plug 'altercation/vim-colors-solarized'
 
 call plug#end()
-endif
 
-" -------------------- More Plugin Settings --------------------
+packadd! termdebug
 
-" Sets characters to be used by indentLine plugin
-let g:indentLine_char_list=['|','¦','┆','┊'] " "
+" -------------------- Plugin Settings --------------------
 
 let g:user_emmet_install_global=0
 
-let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history' 
+let g:fzf_history_dir='/home/bpayne/.local/share/fzf-history'
 
-" Syntax highlighting on-off setting from YCM plugin
 let g:ycm_enable_semantic_highlighting=0
-
-let g:AutoPairsMapSpace=0
+let g:ycm_clear_inlay_hints_in_insert_mode=1
 
 " Needed for editor config to work properly
 let g:EditorConfig_exclude_patterns=['fugitive://.*']
 
 " Prevents bufferline plugin from echoing to command line
 let g:bufferline_echo=0
-let g:bufferline_show_bufnr =0
+let g:bufferline_show_bufnr=0
 
 " Turn off git plugin global mappings
 let g:fugitive_no_maps=1
@@ -216,10 +203,13 @@ let g:OmniSharp_selector_findusages='fzf'
 let g:OmniSharp_highlighting=0
 
 let g:ale_linters={
-			\ 'cs': ['OmniSharp']
+			\ 'cs': ['OmniSharp'],
+			\ 'vim': ['vint'],
 			\ }
 
-" }}} 
+let g:vimspector_enable_mappings = 'HUMAN'
+
+" }}}
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
 
@@ -228,24 +218,21 @@ let g:ale_linters={
 " ---------------- Mouse -----------------
 
 if has('mouse')
-	" Mouse available in all modes
+" Mouse available in all modes
 	set mouse=a
-	
+
 	" Regular scrolling
 	noremap <ScrollWheelDown> 2<C-e>
 	noremap <ScrollWheelUp> 2<C-y>
 
-	" Shift held while scrolling = Half-page scroll
+" Shift held while scrolling = Half-page scroll
 	noremap <S-ScrollWheelDown> <C-f>
 	noremap <S-ScrollWheelUp> <C-b>
-	
-	" Ctrl held while scrolling = One page scroll
+
+" Ctrl held while scrolling = One page scroll
 	noremap <C-ScrollWheelDown> <C-d>
 	noremap <C-ScrollWheelUp> <C-u>
-	
-	" Scrolling with insert mode = Escape insert mode
-	inoremap <ScrollWheelDown> <esc>
-	inoremap <ScrollWheelUp> <esc>
+
 endif
 
 " ---------------- General -----------------
@@ -270,11 +257,11 @@ nnoremap tt :tab split<CR>
 " Close tab
 nnoremap rr :tab close<CR>
 
-" Cut
+" Global cut
 vnoremap <C-x> "+x
-" copy
+" Global copy
 vnoremap <C-c> "+y
-" Paste
+" Global paste
 vnoremap <C-v> "+gP
 
 " Edit current file with superuser permissions
@@ -282,13 +269,10 @@ cnoremap :sed :w<CR>:!sudo tee %
 
 " ----------------- Plugin mappings -----------------
 
-" Vim-Plug shortform
-cnoremap :PlugIn :PlugInstall<CR>
-
 nnoremap <leader>t :NERDTreeToggle<CR>
 nnoremap <leader>f :NERDTreeFind<CR>
 
-imap <C-l> <Plug>(YCMToggleSignatureHelp)
+inoremap <C-l> <Plug>(YCMToggleSignatureHelp)
 
 " }}}
 
@@ -321,7 +305,7 @@ set statusline+=\ %p%%\
 
 " ----------------------------- AFTER ----------------------------- {{{
 
-" Any settings that may otherwise be overwritten
+" Settings that may otherwise be overwritten
 
 " -------------------------- Display -------------------------- 
 
@@ -329,7 +313,13 @@ set noshowmode
 
 set fillchars=stlnc:-,vert:\|,fold:-,diff:-
 
+set guicursor=n-v-c:block-screenCursor
+set guicursor+=i:ver100-modeInsert
+set guicursor+=n-v-c:blinkon0
+set guicursor+=i:blinkwait10
+
 if has('gui_running')
+	set guioptions-=r guioptions-=L
 	set termguicolors
 	set guifont=Hack\ Nerd\ Font\ Mono
 	set background=dark
