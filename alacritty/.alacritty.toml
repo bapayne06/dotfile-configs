@@ -17,6 +17,7 @@ opacity = 0.9
 
 [cursor]
 style = { shape = "Block", blinking="On" }
+blink_interval = 450
 
 [font.normal]
 family = "Hack Nerd Font Mono"

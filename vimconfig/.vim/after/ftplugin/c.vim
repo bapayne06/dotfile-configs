@@ -1,6 +1,6 @@
-setlocal foldmethod=indent
+setlocal shiftwidth=4 tabstop=4  cindent autoindent
+
 setlocal makeprg=gcc\ -Wall\ -Wextra\ -std=c23\ -o\ %<\ %
-setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab cindent
 
 nnoremap <buffer> <F4> :w<CR>:make<CR>
 
