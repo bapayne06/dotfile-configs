@@ -1,4 +1,4 @@
 augroup cppfile
 	autocmd!
-	autocmd BufNewFile,BufRead *.cpp set filetype=cpp
+	autocmd BufNewFile,BufRead *.h,*.hpp,*.cpp set filetype=cpp
 augroup END

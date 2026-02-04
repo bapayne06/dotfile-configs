@@ -1,11 +1,8 @@
 " ---------- bpayne .vimrc file ----------
 
-" Leader key for custom mapping
-let g:mapleader="."
+
 
 " ----------------------------- SETTINGS ----------------------------- {{{
-
-" -- Vim stuff --
 
 filetype detect
 filetype plugin indent on
@@ -275,6 +272,9 @@ augroup END
 " }}}
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
+
+" Leader key for custom mapping
+let g:mapleader="."
 
 " ':mapclear' & ':source' in command line to reset all custom binds
 

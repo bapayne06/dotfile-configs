@@ -2,15 +2,23 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+source /usr/share/autojump/autojump.sh
+
 export HOME="/home/bpayne"
 
-# Force on true color, added by Brayden for scripting
+# Set 256-colour 
 export TERM=xterm-256color
-force_color_prompt=yes
 
+# Sets default text editors for shell to use
+export EDITOR="vim --nofork"
+export VISUAL="gvim --nofork"
+
+export HTOPRC="$HOME/.dotfiles/htop/htoprc" # Move default htop config path to this one
+
+# Ensure gvim uses wayland
 export GVIM_ENABLE_WAYLAND=1
 
-source /usr/share/autojump/autojump.sh
+force_color_prompt=yes
 
 # If not running interactively, don't do anything
 case $- in
@@ -35,7 +43,7 @@ shopt -s checkwinsize
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -51,7 +59,6 @@ case "$TERM" in
 esac
 
 
-
 if [ -n "$force_color_prompt" ]; then
 		if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
@@ -63,9 +70,10 @@ if [ -n "$force_color_prompt" ]; then
 		fi
 fi
 
+# Prompt shown after every command
 if [ "$color_prompt" == 'yes' ]; then
 	PS1='\[\e[1m\][\[\e[93m\]\t\[\e[39m\]]\n\[\e[92m\]\u\[\e[92m\]@\[\e[92m\]\h\[\e[39m\]:\[\e[97m\]\w\[\e[0m\] \[\e[92m\]\$\[\e[0m\] '
-else
+else # If no colour is on, this prompt will be displayed instead
 	PS1='[\t]\n\u@\h:\w \$ '
 fi
 
@@ -81,14 +89,6 @@ esac
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-# if [ -f "$HOME/.bash_aliases" ]; then
-#		. "$HOME/.bash_aliases"
-# fi
-
 # enable programmable completion features (you dont need to enable
 # this, if its already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -100,17 +100,23 @@ if ! shopt -oq posix; then
 	fi
 fi
 
-export EDITOR="vim --nofork"
-export VISUAL="gvim --nofork"
+# Startup starship prompt for bash if installed
+eval "$(starship init bash)"
+eval "$(starship completions bash)"
 
 set mark-symlinked-directories on
 
-# Startup nnn file manager if installed 
+# Startup nnn file manager if installed
 if dpkg -s nnn &> /dev/null; then
 	[ -n "$NNNLVL" ] && PS1="N$NNNLVL $PS1"
 	export NNN_TMPFILE='/tmp/.lastd'
 	export NNN_PLUG='e:-xdgdefault;g:getplugs;m:mp3conv;r:rsynccp;s:organize'
 fi
+alias nnn='nnn -H'
+alias nf='nnn -H'
+alias Nf='sudo nnn -H'
+alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
+
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -137,19 +143,5 @@ alias root='cd /'
 
 alias gs='git status'
 
-# nnn terminal file manager
-alias nnn='nnn -H'
-alias nf='nnn -H'
-alias Nf='sudo nnn -H'
-alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
-
-eval "$(starship init bash)"
-eval "$(starship completions bash)"
-
-# Color scheme for nnn file manager
-BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
-export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
-
-export WWW_HOME=https://www.google.com/
-
+# Display this message on terminal start
 echo -e "\n\e[01;15mbash ${BASH_VERSION}\e[0m\n"
