@@ -5,6 +5,25 @@ let g:mapleader="."
 
 " ----------------------------- SETTINGS ----------------------------- {{{
 
+" -- Vim stuff --
+
+filetype detect
+filetype plugin indent on
+set lazyredraw
+set ttyfast
+set noswapfile
+set relativenumber
+set wildmenu wildmode=longest:full,full
+set tags=./tags;
+set laststatus=2 showtabline=2
+set nocompatible
+set confirm
+set undodir=~/.vim/backup
+set undofile
+set undoreload=10000
+set shortmess-=I
+set encoding=utf-8
+
 " ----------------------------- RUNTIMEPATH ----------------------------- {{{
 
 set runtimepath+=~/.vim/autoload
@@ -40,53 +59,11 @@ hi screenCursor guifg=black guibg=white ctermfg=0 ctermbg=15
 hi screenInsertCursor guifg=white guibg=#00ff00 ctermfg=15 ctermbg=46
 
 " }}}
-
-" -- Vim stuff --
-
-filetype detect
-filetype plugin indent on
-set lazyredraw
-set ttyfast
-set noswapfile
-set relativenumber
-set wildmenu wildmode=longest:full,full
-set tags=./tags,tags;
-set laststatus=2 showtabline=2
-set nocompatible
-set confirm
-set undodir=~/.vim/backup
-set undofile
-set undoreload=10000
-set shortmess-=I
-
-" -- Text & Files --
-
-set paste
-set clipboard=unnamedplus
-set textwidth=80
-set linespace=2
-set list
-set shiftround
-set smarttab expandtab
-set tabstop=4 softtabstop=4 shiftwidth=4
-set hlsearch
-set display=lastline
-set wrap
-set incsearch
-set ignorecase
-set smartcase
-set foldmethod=manual
-set autoindent
-set cursorline
-set ruler
-set encoding=utf-8
-set debug="msg", "throw"
-syntax on
-
 " }}}
 
 " ----------------------------- SCRIPTS ----------------------------- {{{
 
+" For use with status line
 function! ReturnCurrentMode() abort
     if mode()=='n'
         return '%#modeNormal#' . ' NORMAL'
@@ -103,6 +80,7 @@ function! ReturnCurrentMode() abort
     endif
 endfunction
 
+" Similar purpose as above
 function! GitBranchName() abort
     let branch = trim(system("git rev-parse --abbrev-ref HEAD 2>/dev/null"))
     return branch
@@ -111,7 +89,44 @@ endfunction
 " }}}
 
 " ----------------------------- PLUGINS ----------------------------- {{{
+
+" Vim-plug used for plugin management
+
+" vim-polygot requires this setting *before* being loaded
+let g:polyglot_disabled=['markdown']
+
+if plug#begin('~/.vim/plugged')
+
+    " -- General Plugins --
+    Plug 'tpope/vim-commentary'
+    Plug 'sheerun/vim-polyglot'
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'mattn/emmet-vim'
+    Plug 'tpope/vim-dispatch'
+    Plug 'preservim/nerdtree'                  " Fie explorer within vim
+    Plug 'cdelledonne/vim-cmake'
+    Plug 'prabirshrestha/vim-lsp'              " Only works with lsp servers
+    Plug 'prabirshrestha/vim-lsp-settings'     "Auto configures lsp server for related file
+    Plug 'prabirshrestha/asyncomplete.vim'     " autocomplete for typing (only works with provider like lsp)
+    Plug 'prabirshrestha/asyncomplete-lsp.vim' " Compatibility plugin for asyncomplete & vim-lsp
+    Plug 'vim-fuzzbox/fuzzbox.vim'
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'davidhalter/jedi-vim'
+    Plug 'preservim/vim-indent-guides'
+
+    Plug 'jaredgorski/spacecamp'
+    Plug 'fmoralesc/molokayo'
+    Plug 'lucasprag/simpleblack'
+
+    call plug#end()
+endif
+
+" -- Built-in Vim plugins --
+packadd! termdebug
+
 " ----------------------------- PLUGIN SETTINGS ----------------------------- {{{
+
+" ----------------------------- EMMET-VIM  ----------------------------- {{{
 
 " Prevent emmet-vim being used for files other than html or css
 let g:user_emmet_install_global=0
@@ -119,15 +134,9 @@ let g:user_emmet_install_global=0
 " Enable emmet-vim for all modes
 let g:user_emmet_mode='a'
 
-" Set html and css as the only filetypes for emmet-vim
-augroup setEmmet
-    autocmd!
-    autocmd FileType html,css EmmetInstall
-augroup END
-
 " Template for emmet-vim to use
 let g:user_emmet_settings = {
-\  'variables': {'lang': 'ja'},
+\  'variables': {'lang': 'en'},
 \  'html': {
 \    'default_attributes': {
 \      'option': {'value': v:null},
@@ -147,12 +156,15 @@ let g:user_emmet_settings = {
 \  },
 \}
 
-let g:EditorConfig_exclude_patterns=['fugitive://.*']
+" Set html and css as the only filetypes for emmet-vim
+augroup setEmmet
+    autocmd!
+    autocmd FileType html,css EmmetInstall
+augroup END
 
-let g:indentLine_setColors=0
-let g:vim_json_conceal=0
-let g:markdown_syntax_conceal=0
-let g:indentLine_char_ = ['¦']
+" }}}
+
+let g:EditorConfig_exclude_patterns=['fugitive://.*']
 
 let g:OmniSharp_server_use_mono=1
 let g:OmniSharp_highlighting=0
@@ -163,9 +175,13 @@ let g:cmake_statusline=1
 let g:fugitive_no_maps=1
 let g:fuzzbox_mappings=0
 
+
+let g:indent_guides_enable_on_vim_startup=1
+
 " }}}
 
 " ----------------------------- LSP CONFIG ----------------------------- {{{
+
 " ----------------------------- CUSTOM LSPs ----------------------------- {{{
 " clangd lsp (for C & C++)
 if executable('clangd')
@@ -256,40 +272,6 @@ augroup END
 
 " }}}
 
-" Vim-plug used for plugin management
-
-" vim-polygot requires this setting *before* being loaded
-let g:polyglot_disabled=['markdown']
-
-if plug#begin('~/.vim/plugged')
-
-    " -- General Plugins --
-    Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
-    Plug 'tpope/vim-commentary'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'editorconfig/editorconfig-vim'
-    Plug 'mattn/emmet-vim'
-    Plug 'tpope/vim-dispatch'
-    Plug 'preservim/nerdtree'
-    Plug 'cdelledonne/vim-cmake'
-    Plug 'prabirshrestha/vim-lsp' " Only works with lsp servers
-    Plug 'prabirshrestha/vim-lsp-settings' "Auto configures lsp server for related file
-    Plug 'prabirshrestha/asyncomplete.vim' " autocomplete for typing (only works with provider like lsp)
-    Plug 'prabirshrestha/asyncomplete-lsp.vim' " Compatibility plugin for asyncomplete & vim-lsp
-    Plug 'Yggdroot/indentLine'
-    Plug 'vim-fuzzbox/fuzzbox.vim'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'davidhalter/jedi-vim'
-    " -- Colorscheme Plugins --
-    Plug 'jaredgorski/spacecamp'
-    Plug 'fmoralesc/molokayo'
-    Plug 'lucasprag/simpleblack'
-
-    call plug#end()
-endif
-
-packadd! termdebug
-
 " }}}
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
@@ -348,10 +330,12 @@ inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
 " }}}
 
-" ----------------------------- WINDOW ----------------------------- {{{
+" ----------------------------- AFTER SETTINGS ----------------------------- {{{
+
 " ----------------------------- STATUS LINE ----------------------------- {{{
 
 " Clear status line
+" (Backwards slashes followed by spaces are probably intentional for formatting)
 set statusline=
 set statusline+=%{%ReturnCurrentMode()%}\ 
 set statusline+=%#statusDefault#%(%#statusGit#[%{%GitBranchName()%}]%#statusDefault#%)
@@ -375,7 +359,8 @@ set statusline+=\/%L\ \|
 set statusline+=\ %p%%\ 
 
 " }}}
-" ----------------------------- AFTER ----------------------------- {{{
+
+" ----------------------------- OVERWRITABLES ----------------------------- {{{
 
 " Settings that may otherwise be overwritten
 
@@ -383,12 +368,35 @@ set statusline+=\ %p%%\
 
 set noshowmode
 
-"set fillchars=stlnc:^,vert:\|,fold:-,diff:-
-
+" -- Cursor appearance --
 set guicursor=n-v-c:block-screenCursor
 set guicursor+=i:ver100-modeInsert
 set guicursor+=n-v-c:blinkon0
 set guicursor+=i:blinkwait10
+
+" -- Text & Files --
+
+set clipboard=unnamedplus
+set textwidth=80
+set linespace=2
+set shiftround
+set expandtab
+set tabstop=4 softtabstop=4 shiftwidth=4
+set hlsearch
+set display=lastline
+set wrap
+set incsearch
+set ignorecase
+set smartcase
+set foldmethod=manual
+set autoindent
+set cursorline
+set ruler
+set debug="msg", "throw"
+syntax on
+set conceallevel=2
+set list
+set listchars-=eol
 
 if has('gui_running')
     set guioptions-=r guioptions-=L
@@ -407,5 +415,4 @@ endif
 set showcmd
 
 " }}}
-
 " }}}

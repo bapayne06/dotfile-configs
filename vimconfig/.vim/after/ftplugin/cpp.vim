@@ -1,4 +1,4 @@
-setlocal cindent autoindent
+setlocal cindent autoindent expandtab shiftwidth=4 softtabstop=4 tabstop=4
 
 setlocal makeprg=g++\ -Wall\ -Wextra\ -Weffc++\
 			\ -Wsign-conversion\ -Wconversion\ -ggdb\
