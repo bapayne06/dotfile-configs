@@ -5,7 +5,11 @@ import = [
 ]
 
 [env]
-TERM = "alacritty"
+TERM = "screen-256color"
+
+[shell]
+program = "/usr/bin/tmux"
+args = ["new-session", "-A", '-D']
 
 [window]
 dimensions = { columns=120,lines=35 }

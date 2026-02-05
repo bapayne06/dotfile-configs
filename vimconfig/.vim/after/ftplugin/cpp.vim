@@ -1,6 +1,7 @@
 setlocal cindent autoindent expandtab
 setlocal shiftwidth=4 softtabstop=4 tabstop=4
 
+setlocal makeprg=xmake
 
 "setlocal makeprg=g++\ -Wall\ -Wextra\ -Weffc++\
 "			\ -Wsign-conversion\ -Wconversion\ -ggdb\

@@ -1,5 +1,7 @@
 setlocal cindent autoindent expandtab shiftwidth=4 softtabstop=4 tabstop=4
 
+setlocal makeprg=xmake
+
 "setlocal makeprg=gcc\ -Wall\ -Wextra\ -std=c23\
 "            \ -pedantic-errors\ -o\ %<\ %
 

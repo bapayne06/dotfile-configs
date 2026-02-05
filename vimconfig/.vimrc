@@ -4,8 +4,7 @@
 
 " ----------------------------- SETTINGS ----------------------------- {{{
 
-
-
+set nocompatible
 filetype detect
 filetype plugin indent on
 set lazyredraw
@@ -15,13 +14,14 @@ set relativenumber
 set wildmenu wildmode=longest:full,full
 set tags=./tags;
 set laststatus=2 showtabline=2
-set nocompatible
-set confirm
-set undodir=~/.vim/backup
+set undodir=~/.vim/undo
 set undofile
 set undoreload=10000
-set shortmess-=I
+set backupdir=~/.vim/backup
+" set shortmess-=I
 set encoding=utf-8
+set cmdwinheight=12
+set autochdir                           " Autoset vim's working directory to current buffer
 
 " ----------------------------- RUNTIMEPATH ----------------------------- {{{
 
@@ -63,10 +63,10 @@ hi screenInsertCursor guifg=white guibg=#00ff00 ctermfg=15 ctermbg=46
 " ----------------------------- SCRIPTS ----------------------------- {{{
 
 " Automatically set vim's working directory to currently focused buffer
-augroup AutoPWD
-    autocmd!
-    autocmd BufEnter * if &buftype == '' && &modifiable && expand('%') != '' | lcd %:p:h | endif
-augroup END
+" augroup AutoPWD
+"     autocmd!
+"     autocmd BufEnter * if &buftype == '' && &modifiable && expand('%') != '' | lcd %:p:h | endif
+" augroup END
 
 " For use with status line
 function! ReturnCurrentMode() abort
@@ -101,27 +101,25 @@ endfunction
 let g:polyglot_disabled=['markdown']
 
 if plug#begin('~/.vim/plugged')
+    Plug 'tpope/vim-commentary'                         " Comment shortcuts for multiple lines & more
+    Plug 'sheerun/vim-polyglot'                         " Language pack for highlighting and debugging
+    Plug 'editorconfig/editorconfig-vim'                " Compatibility for .editorconfig files
+    Plug 'mattn/emmet-vim'                              " Convenient editing for HTML or related languages
+    Plug 'tpope/vim-dispatch'                           " Asynchronous compilation
+    Plug 'prabirshrestha/vim-lsp'                       " Only works with lsp servers
+    Plug 'prabirshrestha/vim-lsp-settings'              " Auto configures lsp server for related file
+    Plug 'prabirshrestha/asyncomplete.vim'              " autocomplete for typing (only works with provider like lsp)
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'          " Compatibility for asyncomplete & vim-lsp
+    Plug 'jiangmiao/auto-pairs'                         " Character auto-pair for symbols like brackets or quotes
+    Plug 'davidhalter/jedi-vim'                         " Python analysis tool library
+    Plug 'preservim/vim-indent-guides'                  " Indentation visualizer
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Fuzzy finder plugin dependency
+    Plug 'junegunn/fzf.vim'                             " Fuzzy finder main plugin
 
-    " -- General Plugins --
-    Plug 'tpope/vim-commentary'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'editorconfig/editorconfig-vim'
-    Plug 'mattn/emmet-vim'
-    Plug 'tpope/vim-dispatch'
-"    Plug 'preservim/nerdtree'                  " Fie explorer within vim
-    Plug 'prabirshrestha/vim-lsp'              " Only works with lsp servers
-    Plug 'prabirshrestha/vim-lsp-settings'     "Auto configures lsp server for related file
-    Plug 'prabirshrestha/asyncomplete.vim'     " autocomplete for typing (only works with provider like lsp)
-    Plug 'prabirshrestha/asyncomplete-lsp.vim' " Compatibility plugin for asyncomplete & vim-lsp
-    Plug 'vim-fuzzbox/fuzzbox.vim'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'davidhalter/jedi-vim'
-    Plug 'preservim/vim-indent-guides'
-
+" Colorscheme plugins past this point
     Plug 'jaredgorski/spacecamp'
     Plug 'fmoralesc/molokayo'
     Plug 'lucasprag/simpleblack'
-
     call plug#end()
 endif
 
@@ -130,7 +128,21 @@ packadd! termdebug
 
 " ----------------------------- PLUGIN SETTINGS ----------------------------- {{{
 
-" ----------------------------- EMMET-VIM  ----------------------------- {{{
+
+let g:EditorConfig_exclude_patterns=['fugitive://.*']
+
+let g:OmniSharp_server_use_mono=1
+let g:OmniSharp_highlighting=0
+
+let g:fugitive_no_maps=1
+let g:fuzzbox_mappings=0
+
+let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_guide_size=1
+let g:indent_guides_exclude_filetypes=['help', 'text', 'markdown']
+let g:indent_guides_color_change_percent=15
+
+" ----------------------------- EMMMET PLUGIN ----------------------------- {{{
 
 " Prevent emmet-vim being used for files other than html or css
 let g:user_emmet_install_global=0
@@ -167,23 +179,55 @@ augroup setEmmet
 augroup END
 
 " }}}
-
-let g:EditorConfig_exclude_patterns=['fugitive://.*']
-
-let g:OmniSharp_server_use_mono=1
-let g:OmniSharp_highlighting=0
-
-let g:fugitive_no_maps=1
-let g:fuzzbox_mappings=0
-
-
-let g:indent_guides_enable_on_vim_startup=1
-
 " }}}
 
 " ----------------------------- LSP CONFIG ----------------------------- {{{
 
-" ----------------------------- CUSTOM LSPs ----------------------------- {{{
+let g:lsp_fold_enabled=0            " Disable fold handling by lsp
+let g:lsp_semantic_enabled=1        " Enable semantic highlighting of text
+let g:lsp_use_native_client=1       " Enable usage of 
+let g:lsp_format_sync_timeout=1000
+let g:lsp_diagnostics_virtual_text_insert_mode_enabled=1
+
+" LSP Mappings
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    noremap <buffer> gd <plug>(lsp-definition)
+    noremap <buffer> gs <plug>(lsp-document-symbol-search)
+    noremap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    noremap <buffer> gr <plug>(lsp-references)
+    noremap <buffer> gi <plug>(lsp-implementation)
+    noremap <buffer> gt <plug>(lsp-type-definition)
+    noremap <buffer> <leader>rn <plug>(lsp-rename)
+    noremap <buffer> [g <plug>(lsp-previous-diagnostic)
+    noremap <buffer> ]g <plug>(lsp-next-diagnostic)
+    noremap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    augroup LSPSync
+        autocmd!
+        autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    augroup END
+
+" refer to doc to add more commands
+endfunction
+
+augroup LSPInstall
+    autocmd!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+let g:markdown_fenced_languages=[
+            \ 'vim',
+            \ 'help',
+            \ ]
+
+" ----------------------------- SYSTEM LSPs ----------------------------- {{{
 " clangd lsp (for C & C++)
 if executable('clangd')
     augroup clanglsp
@@ -231,48 +275,19 @@ if executable('csharp-ls')
     augroup END
 endif
 
-" }}}
-
-" Configuration for vim lsp plugin, requires external lsp servers for their
-" respective languages to function
-
-let g:lsp_fold_enabled=0
-
-" LSP Mappings
-function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    noremap <buffer> gd <plug>(lsp-definition)
-    noremap <buffer> gs <plug>(lsp-document-symbol-search)
-    noremap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    noremap <buffer> gr <plug>(lsp-references)
-    noremap <buffer> gi <plug>(lsp-implementation)
-    noremap <buffer> gt <plug>(lsp-type-definition)
-    noremap <buffer> <leader>rn <plug>(lsp-rename)
-    noremap <buffer> [g <plug>(lsp-previous-diagnostic)
-    noremap <buffer> ]g <plug>(lsp-next-diagnostic)
-    noremap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-
-    let g:lsp_format_sync_timeout = 1000
-    augroup LSPSync
+if executable('bash-language-server')
+    augroup bashlsp
         autocmd!
-        autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+        autocmd User lsp_setup call lsp#register_server({
+        \ 'name': 'bash-language-server',
+        \ 'cmd': {server_info->['bash-language-server', 'start']},
+        \ 'allowlist': ['sh', 'bash'],
+        \ })
     augroup END
-
-" refer to doc to add more commands
-endfunction
-
-augroup LSPInstall
-    autocmd!
-    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+endif
 
 " }}}
-
+" }}}
 " }}}
 
 " ----------------------------- MAPPINGS ----------------------------- {{{
@@ -321,6 +336,11 @@ nnoremap re :set expandtab<BAR>retab!<CR>
 nnoremap tt :tab split<CR>
 nnoremap rr :tab close<CR>
 
+
+nnoremap <C-M-c> :terminal<CR>
+
+" -- Editing --
+
 " Global cut
 noremap <C-x> "+x
 
@@ -331,7 +351,10 @@ noremap <C-c> "+y
 noremap <C-v> "+gP
 
 " Edit current file with superuser permissions
-cnoremap :sed :w<CR>:!sudo tee %
+cnoremap :sed :w<CR>:!sudo tee %<CR>
+
+" Shortcut to edit .vimrc
+cnoremap :vimrc :w<CR>:edit $MYVIMRC<CR>
 
 " -- Plugin mappings --
 
@@ -345,12 +368,12 @@ inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
 " }}}
 
-" ----------------------------- AFTER SETTINGS ----------------------------- {{{
+" ----------------------------- MORE SETTINGS ----------------------------- {{{
 
 " ----------------------------- STATUS LINE ----------------------------- {{{
 
-" Clear status line
-" (Backwards slashes followed by spaces are probably intentional for formatting)
+" Backwards slashes followed by spaces are probably intentional for formatting
+
 set statusline=
 set statusline+=%{%ReturnCurrentMode()%}\ 
 set statusline+=%#statusDefault#%(%#statusGit#[%{%GitBranchName()%}]%#statusDefault#%)
@@ -379,9 +402,7 @@ set statusline+=\ %p%%\
 
 " Settings that may otherwise be overwritten
 
-" -------------------------- Display -------------------------- 
-
-set noshowmode
+set noshowmode " Turn off mode echoing to command line
 
 " -- Cursor appearance --
 set guicursor=n-v-c:block-screenCursor
@@ -390,10 +411,9 @@ set guicursor+=n-v-c:blinkon0
 set guicursor+=i:blinkwait10
 
 " -- Text & Files --
-
 set clipboard=unnamedplus
 set textwidth=80
-set linespace=2
+set linespace=3
 set shiftround
 set expandtab
 set tabstop=4 softtabstop=4 shiftwidth=4
@@ -413,6 +433,9 @@ set conceallevel=2
 set list
 set listchars-=eol
 
+set ballooneval
+set balloonevalterm
+
 if has('gui_running')
     set guioptions-=r guioptions-=L
     set termguicolors
@@ -421,6 +444,7 @@ if has('gui_running')
     set lines=42 columns=210
     silent! colorscheme molokayo
     set guiheadroom=45
+    set confirm
 else
     set t_Co=256
     set background=dark
