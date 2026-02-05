@@ -4,6 +4,8 @@
 
 " ----------------------------- SETTINGS ----------------------------- {{{
 
+
+
 filetype detect
 filetype plugin indent on
 set lazyredraw
@@ -60,6 +62,12 @@ hi screenInsertCursor guifg=white guibg=#00ff00 ctermfg=15 ctermbg=46
 
 " ----------------------------- SCRIPTS ----------------------------- {{{
 
+" Automatically set vim's working directory to currently focused buffer
+augroup AutoPWD
+    autocmd!
+    autocmd BufEnter * if &buftype == '' && &modifiable && expand('%') != '' | lcd %:p:h | endif
+augroup END
+
 " For use with status line
 function! ReturnCurrentMode() abort
     if mode()=='n'
@@ -100,8 +108,7 @@ if plug#begin('~/.vim/plugged')
     Plug 'editorconfig/editorconfig-vim'
     Plug 'mattn/emmet-vim'
     Plug 'tpope/vim-dispatch'
-    Plug 'preservim/nerdtree'                  " Fie explorer within vim
-    Plug 'cdelledonne/vim-cmake'
+"    Plug 'preservim/nerdtree'                  " Fie explorer within vim
     Plug 'prabirshrestha/vim-lsp'              " Only works with lsp servers
     Plug 'prabirshrestha/vim-lsp-settings'     "Auto configures lsp server for related file
     Plug 'prabirshrestha/asyncomplete.vim'     " autocomplete for typing (only works with provider like lsp)
@@ -166,9 +173,6 @@ let g:EditorConfig_exclude_patterns=['fugitive://.*']
 let g:OmniSharp_server_use_mono=1
 let g:OmniSharp_highlighting=0
 
-let g:cmake_statusline=1
-
-" Disable default mappings for plugins
 let g:fugitive_no_maps=1
 let g:fuzzbox_mappings=0
 
@@ -284,15 +288,18 @@ let g:mapleader="."
 " -- Mouse --
 
 if has('mouse')
-" Mouse available in all modes
+    " Mouse available in all modes
     set mouse=a
-" Regular scrolling
+
+    " Regular scrolling
     noremap <ScrollWheelDown> 2<C-e>
     noremap <ScrollWheelUp> 2<C-y>
-" Shift held while scrolling = Half-page scroll
+
+    " Shift held while scrolling = Half-page scroll
     noremap <S-ScrollWheelDown> <C-f>
     noremap <S-ScrollWheelUp> <C-b>
-" Ctrl held while scrolling = One page scroll
+
+    " Ctrl held while scrolling = One page scroll
     noremap <C-ScrollWheelDown> <C-d>
     noremap <C-ScrollWheelUp> <C-u>
 endif
@@ -301,28 +308,36 @@ endif
 
 " Save current file
 noremap <C-s> :w<CR>
+
 " Run .vimrc file if detectable and :edit to refresh
 nnoremap <leader>/ :w<CR>:source ~/.vimrc<CR>:edit<CR>
+
 " edit commmand to refresh
 nnoremap <leader>, :w<CR>:edit<CR>
+
 " Toggle highlight search
 nnoremap <leader>' :set hlsearch!<CR>:set hlsearch?<CR>
 nnoremap re :set expandtab<BAR>retab!<CR>
 nnoremap tt :tab split<CR>
 nnoremap rr :tab close<CR>
+
 " Global cut
 noremap <C-x> "+x
+
 " Global copy
 noremap <C-c> "+y
+
 " Global paste
 noremap <C-v> "+gP
+
 " Edit current file with superuser permissions
 cnoremap :sed :w<CR>:!sudo tee %
 
 " -- Plugin mappings --
 
-nnoremap <leader>t :NERDTreeToggle<CR>
-nnoremap <leader>f :NERDTreeFind<CR>
+" nnoremap <leader>t :NERDTreeToggle<CR>
+" nnoremap <leader>f :NERDTreeFind<CR>
+
 " asyncomplete tab completion
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"

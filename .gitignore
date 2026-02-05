@@ -1,4 +1,5 @@
 README.txt
+*.tmp
 vimconfig/.vim/plugged/
 vimconfig/.vim/backup/
 vimconfig/.vim/colors/
