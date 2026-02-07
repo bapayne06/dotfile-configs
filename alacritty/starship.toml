@@ -1,0 +1,57 @@
+# Starship prompt config file
+
+format = """
+$time $shlvl $git_branch $duration $package
+$sudo $username$hostname$directory$character"""
+
+add_newline = true
+
+continuation_prompt = '[ ](bold #ffd710)'
+
+[time]
+disabled = false
+style = 'bold #ffd710'
+format = '\[[$time]($style)\]'
+
+[character]
+success_symbol = '[](bold white)'
+error_symbol = '[](bold red)'
+
+[hostname]
+ssh_symbol = ' '
+format = '[\@$hostname$ssh_symbol]'
+
+[cmd_duration]
+min_time = 250
+style = '[]'
+format = '[\(Duration: $duration\)]($style)'
+
+[memory_usage]
+disabled = false
+threshold = 55
+symbol = ' '
+style = 'bold #e14c11'
+
+[git_branch]
+symbol = ' '
+style = 'red'
+only_attached = true
+format = '[$symbol$branch(: $remote_branch)]($style)'
+
+[directory]
+read_only = '󰌾'
+truncation_symbol = ''
+
+[sudo]
+disabled = false
+symbol = ''
+style = 'bold #ff3c00'
+format = '[as sudo]($style)'
+
+[package]
+version_format = 'v${minor}'
+
+[shlvl]
+disabled = false
+symbol = '⇵ '
+style = 'dimmed #67cf27'

@@ -6,17 +6,18 @@ source /usr/share/autojump/autojump.sh
 
 export HOME="/home/bpayne"
 
-# Set 256-colour 
+# Set 256-colour
 export TERM=xterm-256color
 
-# Sets default text editors for shell to use
-export EDITOR="vim --nofork"
-export VISUAL="gvim --nofork"
+# Sets default text editors
+export EDITOR="emacs"
+export VISUAL="emacs"
 
-export HTOPRC="$HOME/.dotfiles/htop/htoprc" # Move default htop config path to this one
+export HTOPRC="$HOME/.dotfiles/htop/htoprc" # Set htop config path
 
-# Ensure gvim uses wayland
-export GVIM_ENABLE_WAYLAND=1
+export GVIM_ENABLE_WAYLAND=1 # Ensure gvim uses wayland
+
+export STARSHIP_CONFIG=~/starship.toml
 
 force_color_prompt=yes
 
@@ -47,11 +48,6 @@ shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-		debian_chroot=$(cat /etc/debian_chroot)
-fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
@@ -143,5 +139,4 @@ alias root='cd /'
 
 alias gs='git status'
 
-# Display this message on terminal start
-echo -e "\n\e[01;15mbash ${BASH_VERSION}\e[0m\n"
+neofetch # Run neofetch when this script runs for system info

@@ -1,6 +1,11 @@
 " ---------- bpayne .vimrc file ----------
 
 
+" ----------------------------- ENVIRONMENT VARIABLES ----------------------------- {{{
+
+let $BASH_IDE_LOG_LEVEL="error" " Set verbosity of bash lsp
+
+" }}}
 
 " ----------------------------- SETTINGS ----------------------------- {{{
 
@@ -17,14 +22,14 @@ set laststatus=2 showtabline=2
 set undodir=~/.vim/undo
 set undofile
 set undoreload=10000
-set backupdir=~/.vim/backup
-" set shortmess-=I
+set backup
+set backupext=.bak
 set encoding=utf-8
 set cmdwinheight=12
 set autochdir                           " Autoset vim's working directory to current buffer
+set noswapfile                          " Turn off swapfiles because they don't play well with my system
 
-" ----------------------------- RUNTIMEPATH ----------------------------- {{{
-
+"----------------------------- RUNTIMEPATH ----------------------------- {{{
 set runtimepath+=~/.vim/autoload
 set runtimepath+=~/.vim/compiler
 set runtimepath+=~/.vim/indent
@@ -100,34 +105,31 @@ endfunction
 " vim-polygot requires this setting *before* being loaded
 let g:polyglot_disabled=['markdown']
 
-if plug#begin('~/.vim/plugged')
-    Plug 'tpope/vim-commentary'                         " Comment shortcuts for multiple lines & more
-    Plug 'sheerun/vim-polyglot'                         " Language pack for highlighting and debugging
-    Plug 'editorconfig/editorconfig-vim'                " Compatibility for .editorconfig files
-    Plug 'mattn/emmet-vim'                              " Convenient editing for HTML or related languages
-    Plug 'tpope/vim-dispatch'                           " Asynchronous compilation
-    Plug 'prabirshrestha/vim-lsp'                       " Only works with lsp servers
-    Plug 'prabirshrestha/vim-lsp-settings'              " Auto configures lsp server for related file
-    Plug 'prabirshrestha/asyncomplete.vim'              " autocomplete for typing (only works with provider like lsp)
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'          " Compatibility for asyncomplete & vim-lsp
-    Plug 'jiangmiao/auto-pairs'                         " Character auto-pair for symbols like brackets or quotes
-    Plug 'davidhalter/jedi-vim'                         " Python analysis tool library
-    Plug 'preservim/vim-indent-guides'                  " Indentation visualizer
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Fuzzy finder plugin dependency
-    Plug 'junegunn/fzf.vim'                             " Fuzzy finder main plugin
+call plug#begin('~/.vim/plugged')
+Plug 'tpope/vim-commentary'                         " Comment shortcuts for multiple lines & more
+Plug 'sheerun/vim-polyglot'                         " Language pack for highlighting and debugging
+Plug 'editorconfig/editorconfig-vim'                " Compatibility for .editorconfig files
+Plug 'mattn/emmet-vim'                              " Convenient editing for HTML or related languages
+Plug 'tpope/vim-dispatch'                           " Asynchronous compilation
+Plug 'prabirshrestha/vim-lsp'                       " Only works with lsp servers
+Plug 'prabirshrestha/vim-lsp-settings'              " Auto configures lsp server for related file
+Plug 'prabirshrestha/asyncomplete.vim'              " autocomplete for typing (only works with provider like lsp)
+Plug 'prabirshrestha/asyncomplete-lsp.vim'          " Compatibility for asyncomplete & vim-lsp
+Plug 'jiangmiao/auto-pairs'                         " Character auto-pair for symbols like brackets or quotes
+Plug 'davidhalter/jedi-vim'                         " Python analysis tool library
+Plug 'preservim/vim-indent-guides'                  " Indentation visualizer
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Fuzzy finder plugin dependency
+Plug 'junegunn/fzf.vim'                             " Fuzzy finder main plugin
 
 " Colorscheme plugins past this point
-    Plug 'jaredgorski/spacecamp'
-    Plug 'fmoralesc/molokayo'
-    Plug 'lucasprag/simpleblack'
-    call plug#end()
-endif
+Plug 'jaredgorski/spacecamp'
+Plug 'fmoralesc/molokayo'
+Plug 'lucasprag/simpleblack'
+call plug#end()
 
-" -- Built-in Vim plugins --
-packadd! termdebug
+packadd! termdebug " Built-in vim debugger
 
 " ----------------------------- PLUGIN SETTINGS ----------------------------- {{{
-
 
 let g:EditorConfig_exclude_patterns=['fugitive://.*']
 
@@ -330,14 +332,14 @@ nnoremap <leader>/ :w<CR>:source ~/.vimrc<CR>:edit<CR>
 " edit commmand to refresh
 nnoremap <leader>, :w<CR>:edit<CR>
 
+nnoremap <C-M-c> :terminal<CR>
+
 " Toggle highlight search
 nnoremap <leader>' :set hlsearch!<CR>:set hlsearch?<CR>
 nnoremap re :set expandtab<BAR>retab!<CR>
 nnoremap tt :tab split<CR>
 nnoremap rr :tab close<CR>
 
-
-nnoremap <C-M-c> :terminal<CR>
 
 " -- Editing --
 
