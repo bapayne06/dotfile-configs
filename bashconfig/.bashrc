@@ -10,8 +10,8 @@ export HOME="/home/bpayne"
 export TERM=xterm-256color
 
 # Sets default text editors
-export EDITOR="emacs"
-export VISUAL="emacs"
+export EDITOR="nano"
+export VISUAL="kate -b"
 
 export HTOPRC="$HOME/.dotfiles/htop/htoprc" # Set htop config path
 
@@ -128,15 +128,21 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-
-alias sc='source ~/.bashrc'
-
 alias lsa='ls -a'
 alias lsl='ls -l'
 
+alias sc='source ~/.bashrc'
+
+# Directory shortcuts
 alias home='cd ~'
 alias root='cd /'
+alias hdd='cd /mnt/harddrive'
+
+# Short
+alias rfi='rm -rfI'
 
 alias gs='git status'
 
-neofetch # Run neofetch when this script runs for system info
+alias hexedit='hexedit --color'
+
+neofetch # Run neofetch when this script finishes

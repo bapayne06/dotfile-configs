@@ -1,4 +1,23 @@
+;; Converts ANSI escape sequences to their respective colors when compiled
 (add-hook 'compilation-filter-hook 'ansi-osc-compilation-filter)
+
+
+;; For ensuring compatibility between Emacs and tree-sitter language resources
+(setq treesit-language-source-alist
+      '((c "https://github.com/tree-sitter/tree-sitter-c" "v0.23.2")
+        (c++ "https://github.com/tree-sitter/tree-sitter-cpp" "v0.23.2")
+        ))
+
+(setq major-mode-remap-alist
+      '((c-mode   . c-ts-mode)
+        (c++-mode . c++-ts-mode)))
+
+;; Configure folding plugin for tree-sitter
+(use-package treesit-fold
+  :hook
+  ((c-ts-mode   . treesit-fold-mode)
+   (c++-ts-mode . treesit-fold-mode))
+)
 
 ;; Do not add anything below this line, let emacs handle it
 ;; either automatically or through the GUI
@@ -19,6 +38,7 @@
  '(c-default-style "user")
  '(c-syntactic-indentation nil)
  '(c-tab-always-indent nil)
+ '(c-ts-mode-indent-offset 4)
  '(calendar-day-digit-width 2)
  '(calendar-day-header-array ["Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"])
  '(calendar-day-header-width 3)
@@ -62,6 +82,9 @@
  '(flyspell-after-incorrect-word-string nil)
  '(flyspell-delay 2)
  '(font-use-system-font t)
+ '(gdb-debuginfod-enable-setting t)
+ '(gdb-enable-debug t)
+ '(gdb-show-main t)
  '(global-company-mode t)
  '(global-ede-mode t)
  '(global-hi-lock-mode t)
@@ -70,6 +93,8 @@
  '(global-semantic-show-parser-state-mode t)
  '(global-tab-line-mode t)
  '(global-tree-sitter-mode t)
+ '(global-treesit-fold-indicators-mode t)
+ '(global-treesit-fold-mode t)
  '(grep-command "rg")
  '(grep-scroll-output t)
  '(grep-search-path '(nil "~/" "/"))
@@ -116,8 +141,9 @@
  '(package-install-upgrade-built-in t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(tree-sitter-langs mono-complete git doom-themes lsp-ui lsp-mode tree-sitter ac-c-headers async aggressive-indent adjust-parens company-ebdb company-statistics company-math bash-completion))
- '(prog-mode-hook '(flyspell-prog-mode display-line-numbers-mode))
+   '(treesit-fold mono-complete git doom-themes lsp-ui lsp-mode ac-c-headers async aggressive-indent adjust-parens company-ebdb company-statistics company-math bash-completion))
+ '(prog-mode-hook
+   '(flyspell-prog-mode display-line-numbers-mode hs-minor-mode))
  '(python-shell-virtualenv-root "~/venv")
  '(recentf-mode t)
  '(save-place-mode t)
@@ -129,6 +155,8 @@
  '(tab-always-indent 'complete)
  '(tab-width 4)
  '(trash-directory nil)
+ '(treesit-fold-line-count-show t)
+ '(treesit-fold-summary-max-length 50)
  '(user-mail-address "bpayne88@protonmail.com")
  '(what-cursor-show-names t))
 (custom-set-faces
