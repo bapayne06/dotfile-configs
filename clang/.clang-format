@@ -3,9 +3,13 @@
 # Sym-link to home directory for easy clang-format usage :)
 
 
-# Language Config for C & C++
+# Language Config for C++
+
+Language: Cpp
 
 Standard: Auto
+
+AccessModifierOffset: 0
 
 AllowAllArgumentsOnNextLine: true
 
@@ -19,7 +23,7 @@ AllowShortCaseLabelsOnASingleLine: false
 
 AllowShortEnumsOnASingleLine: false
 
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: Empty
 
 AllowShortIfStatementsOnASingleLine: WithoutElse
 
@@ -45,7 +49,7 @@ AlignConsecutiveAssignments:
     Enabled: true
     AlignCompound: true
     AlignFunctionPointers: true
-    AcrossEmptyLines: true
+    AcrossEmptyLines: false
     AcrossComments: false
     PadOperators: true
 
@@ -67,13 +71,34 @@ AlignConsecutiveShortCaseStatements:
 
 BinPackArguments: true
 
-# BinPackLongBracedList: true
+#BinPackLongBracedList: true
 
-# BinPackParameters: OnePerLine
+BinPackParameters: BinPack
 
 BitFieldColonSpacing: After
 
-BreakBeforeBraces: Allman
+#BreakBeforeBraces: Allman
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterCaseLabel: true
+    AfterClass: true
+    AfterControlStatement: Always
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterObjCDeclaration: true
+    AfterStruct: true
+    AfterUnion: true
+    AfterExternBlock: true
+    BeforeCatch: false
+    BeforeElse: true
+    BeforeLambdaBody: true
+    BeforeWhile: false
+    IndentBraces: false
+    SplitEmptyFunction: true
+    SplitEmptyRecord: true
+    SplitEmptyNamespace: true
 
 BreakAfterAttributes: Leave
 
@@ -83,7 +108,7 @@ BreakArrays: false # <-- JSON-only option
 
 BreakBeforeBinaryOperators: NonAssignment
 
-BreakBeforeConceptDeclarations: Never
+BreakBeforeConceptDeclarations: Allowed
 
 BreakBeforeInlineASMColon: OnlyMultiline
 
@@ -93,6 +118,8 @@ BreakConstructorInitializers: AfterColon
 
 BreakInheritanceList: AfterColon
 
+BreakTemplateDeclarations: MultiLine
+
 BreakStringLiterals: true
 
 BreakAfterReturnType: ExceptShortType
@@ -101,13 +128,13 @@ ContinuationIndentWidth: 4
 
 ConstructorInitializerIndentWidth: 4
 
-ColumnLimit: 120
+ColumnLimit: 100
 
 CompactNamespaces: false
 
 Cpp11BracedListStyle: true
 
-EmptyLineAfterAccessModifier: Leave
+EmptyLineAfterAccessModifier: Never
 
 EmptyLineBeforeAccessModifier: LogicalBlock
 
@@ -125,7 +152,7 @@ IndentCaseBlocks: false
 
 IndentCaseLabels: true
 
-IndentExportBlock: true
+IndentExportBlock: false
 
 IndentExternBlock: AfterExternBlock
 
@@ -157,9 +184,11 @@ PenaltyReturnTypeOnItsOwnLine: 999999
 
 PenaltyBreakScopeResolution: 999999
 
-PointerAlignment: Left
+PointerAlignment: Right
 
 ReferenceAlignment: Right
+
+ReflowComments: Always
 
 RemoveEmptyLinesInUnwrappedLines: true
 
@@ -169,7 +198,7 @@ RequiresClausePosition: WithFollowing
 
 ShortNamespaceLines: 2
 
-SpaceAfterCStyleCast: true
+SpaceAfterCStyleCast: false
 
 SpaceAroundPointerQualifiers: Default
 
@@ -192,4 +221,6 @@ SpaceBeforeSquareBrackets: false
 SpacesInAngles: Never
 
 SpacesInContainerLiterals: false
+
+QualifierAlignment: Left
 

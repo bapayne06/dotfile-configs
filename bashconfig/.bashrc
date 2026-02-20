@@ -11,21 +11,38 @@ export TERM=xterm-256color
 
 # Sets default text editors
 export EDITOR="nano"
-export VISUAL="kate -b"
+export VISUAL="xed"
 
-export HTOPRC="$HOME/.dotfiles/htop/htoprc" # Set htop config path
-
-export GVIM_ENABLE_WAYLAND=1 # Ensure gvim uses wayland
+# Ensures that audio properly functions in Java-based applications
+export NO_AT_BRIDGE=1
 
 export STARSHIP_CONFIG=~/starship.toml
 
 force_color_prompt=yes
 
-# If not running interactively, don't do anything
-case $- in
-		*i*) ;;
-			*) return;;
-esac
+# Colored man pages
+export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # Green
+export LESS_TERMCAP_md=$(tput bold; tput setaf 2) # Green
+export LESS_TERMCAP_me=$(tput sgr0)
+export LESS_TERMCAP_se=$(tput sgr0)
+export LESS_TERMCAP_so=$(tput bold; tput setaf 3) # Yellow
+export LESS_TERMCAP_ue=$(tput sgr0)
+export LESS_TERMCAP_us=$(tput smul; tput setaf 1) # Red Underline
+
+export MANROFFOPT="-c"
+export GROFF_NO_SGR=1
+export MANPAGER="less -R"
+
+# Anything below this block will only work in the terminal prompt,
+# so anything else should be above this!
+if [[ $- != *i* ]]; then
+    return 2>/dev/null || exit 0
+fi
+
+#case $- in
+#		*i*) ;;
+#			*) return;;
+#esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -54,7 +71,6 @@ case "$TERM" in
 		xterm-color|*-256color) color_prompt=yes;;
 esac
 
-
 if [ -n "$force_color_prompt" ]; then
 		if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
@@ -68,7 +84,7 @@ fi
 
 # Prompt shown after every command
 if [ "$color_prompt" == 'yes' ]; then
-	PS1='\[\e[1m\][\[\e[93m\]\t\[\e[39m\]]\n\[\e[92m\]\u\[\e[92m\]@\[\e[92m\]\h\[\e[39m\]:\[\e[97m\]\w\[\e[0m\] \[\e[92m\]\$\[\e[0m\] '
+	PS1='\[\033[1m\][\[\033[93m\]\t\[\033[39m\]]\n\[\033[92m\]\u\[\033[92m\]@\[\033[92m\]\h\[\033[39m\]:\[\033[97m\]\w\[\033[0m\] \[\033[92m\]\$\[\033[0m\] '
 else # If no colour is on, this prompt will be displayed instead
 	PS1='[\t]\n\u@\h:\w \$ '
 fi
@@ -113,7 +129,6 @@ alias nf='nnn -H'
 alias Nf='sudo nnn -H'
 alias upn='sh -c $(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)'
 
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -138,11 +153,8 @@ alias home='cd ~'
 alias root='cd /'
 alias hdd='cd /mnt/harddrive'
 
-# Short
-alias rfi='rm -rfI'
+alias rmi='rm -rfI'
 
 alias gs='git status'
 
 alias hexedit='hexedit --color'
-
-neofetch # Run neofetch when this script finishes

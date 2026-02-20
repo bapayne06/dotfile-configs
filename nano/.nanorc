@@ -1,0 +1,22 @@
+include "/usr/share/nano/*.nanorc"
+include "/usr/share/nano/extra/*.nanorc"
+
+set atblanks
+
+set autoindent
+
+set boldtext
+
+set linenumbers
+
+set mouse
+
+set breaklonglines
+
+set softwrap
+
+set positionlog
+
+set tabsize 4
+
+set tabstospaces
