@@ -9,7 +9,7 @@ add_newline = true
 continuation_prompt = '[ ](bold #ffd710)'
 
 [time]
-disabled = false
+disabled = true
 style = 'bold #ffd710'
 format = '\[[$time]($style)\]'
 

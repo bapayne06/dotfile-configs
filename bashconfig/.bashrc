@@ -158,3 +158,7 @@ alias rmi='rm -rfI'
 alias gs='git status'
 
 alias hexedit='hexedit --color'
+
+# spotify player for command line alias
+# (github.com/aome510/spotify-player)
+alias spotify='~/.cargo/bin/spotify_player'
